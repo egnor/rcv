@@ -4,8 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+attrs = "*"
 
 [dev-packages]
+black = "==21.9b0"
+isort = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.9"
