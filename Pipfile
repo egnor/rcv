@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 attrs = "*"
+prettyprinter = "*"
 
 [dev-packages]
 black = "==21.9b0"
