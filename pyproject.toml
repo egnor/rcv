@@ -1,0 +1,47 @@
+# Python project metadata, including dependencies & tool settings
+# https://snarky.ca/what-the-heck-is-pyproject-toml
+
+[project]
+name = "rcv"
+version = "0.1"
+
+dependencies = [
+    "attrs",
+    "prettyprinter",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "mypy",
+]
+
+[tool.black]
+line-length = 80
+
+[tool.isort]
+profile = "black"
+line_length = 80
+
+[tool.mypy]
+namespace_packages = true
+explicit_package_bases = true  # https://github.com/python/mypy/issues/13392
+
+[tool.pylint.messages_control]
+enable = ["useless-suppression"]
+disable = [
+    "fixme",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-locals",
+    "too-many-nested-blocks",
+    "too-many-public-methods",
+    "too-many-statements",
+]
+
+include-naming-hint = "y"
+variable-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"
+argument-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"

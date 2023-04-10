@@ -1,7 +1,19 @@
-.*.swp
-
-__pycache__
-*.pyc
-
-*.xml
+# Data
+*.csv
 *.html
+*.xml
+
+# Python
+*.egg-info
+*.pyc
+__pycache__/
+python_venv/
+
+# Generic, system, text editors
+*~
+.DS_Store
+.~lock.*
+.*.swp
+.direnv/
+.idea/
+.vscode/
