@@ -204,6 +204,7 @@ def parse(text: str) -> rcv_data.Election:
     else:
         raise ValueError(f"Unrecognized XML root tag: {root.tag}")
 
+
 #
 # Test utility to run from the command line
 #
