@@ -1,6 +1,7 @@
 """Script to migrate data from NationBuilder to EveryAction"""
 
 import csv
+import re
 import signal
 from pathlib import Path
 
@@ -16,7 +17,20 @@ BASIC_MAP = dict(
     suffix="Suffix",
 )
 
-NB_ADDR_TYPES = ["primary", "address", "billing", "mailing"]
+"""
+MISC_MAP = dict(
+    note=
+    employer=
+    occupation=
+    sex=
+    recruiter_name=
+    point_person_name=
+    is_volunteer=
+    availability=
+)
+"""
+
+NB_ADDR_TYPES = ["primary", "address", "billing", "mailing", "user_submitted"]
 
 ADDR_MAP = dict(
     address1="Address Line 1",
@@ -111,9 +125,9 @@ def fire_main(*nb_csvs, ea_csv=None, limit=10, activist_code="Test"):
             ea_path = Path(ea_csv)
         else:
             np = nb_path.stem.split("-")
-            np = filter(lambda p: p not in ("", "nationbuilder", "export"), np)
-            if limit:
-                np = [*np, f"limit{limit}"]
+            np = [p for p in np if p not in ("", "nationbuilder", "export")]
+            np.extend([f"limit{limit}"] if limit else [])
+            np.extend([activist_code] if activist_code else [])
             ea_path = nb_path.with_name(f"everyaction-{'-'.join(np)}.txt")
 
         convert(nb_path, ea_path, limit=limit, activist_code=activist_code)
@@ -203,6 +217,9 @@ def convert_row(nb_row, *, activist_code):
         number = nb_row.get(f"{nb_ptype}{NB_PHONE_NUMBER_SUFFIX}")
         opt_in = nb_row.get(f"{nb_ptype}{NB_PHONE_OPT_IN_SUFFIX}")
         if number:
+            # Strip US country code and non-digits
+            number = re.sub(r"[^\d]", "", number)
+            number = re.sub(r"^1(\d{10})$", r"\1", number)
             pmap = {EA_PHONE_NUMBER: number, EA_PHONE_TYPE: ea_ptype}
             if nb_no_contact or nb_no_call or nb_fed_no_call:
                 pmap[EA_PHONE_OPT] = EA_PHONE_OPT_OUT
@@ -215,16 +232,19 @@ def convert_row(nb_row, *, activist_code):
             if pmap not in phone_maps:
                 phone_maps.append(pmap)
 
+    """
     yield {
         **basic,
-        **(addr_maps[0] if addr_maps else {}),
-        **(email_maps[0] if email_maps else {}),
-        **(phone_maps[0] if phone_maps else {}),
+        **(addr_maps.pop(0) if addr_maps else {}),
+        **(email_maps.pop(0) if email_maps else {}),
+        **(phone_maps.pop(0) if phone_maps else {}),
     }
+    """
 
-    for addr_map in addr_maps[1:]:
+    yield basic
+    for addr_map in addr_maps:
         yield {**basic, **addr_map}
-    for email_map in email_maps[1:]:
+    for email_map in email_maps:
         yield {**basic, **email_map}
-    for phone_map in phone_maps[1:]:
+    for phone_map in phone_maps:
         yield {**basic, **phone_map}
