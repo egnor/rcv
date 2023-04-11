@@ -7,6 +7,7 @@ version = "0.1"
 
 dependencies = [
     "attrs",
+    "fire",
     "prettyprinter",
 ]
 
@@ -16,6 +17,9 @@ dev = [
     "isort",
     "mypy",
 ]
+
+[project.scripts]
+nb_to_ea = "nb_to_ea.main:main"
 
 [tool.black]
 line-length = 80
@@ -45,3 +49,7 @@ disable = [
 include-naming-hint = "y"
 variable-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"
 argument-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"
+
+[tool.setuptools.package-dir]
+nb_to_ea = "nb_to_ea"
+rcv_results = "rcv_results"
