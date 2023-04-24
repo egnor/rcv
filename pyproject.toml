@@ -19,7 +19,7 @@ dev = [
 ]
 
 [project.scripts]
-nb_to_ea = "nb_to_ea.main:main"
+nb_to_ea = "nb_to_ea.convert:main"
 
 [tool.black]
 line-length = 80
