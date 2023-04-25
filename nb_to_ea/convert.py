@@ -283,10 +283,10 @@ def sanitize_ea_row(row):
         if v:
             limit = EA_FIELD_LIMITS.get(k, 10000)
             if len(v) > limit:
-                v = v[:limit - 3]
-                v = v[:v.rindex(" ") + 1] if " " in v[limit // 2:] else v
+                v = v[: limit - 3]
+                v = v[: v.rindex(" ") + 1] if " " in v[limit // 2 :] else v
                 v = v + "..."
-            out[k] = (v[:limit - 3] + "..." if len(v) > limit else v)
+            out[k] = v[: limit - 3] + "..." if len(v) > limit else v
 
     return out
 
@@ -300,8 +300,11 @@ def to_bool(value):
 
     value = value.lower() if isinstance(value, str) else value
     return (
-        True if value in ("true", "yes", "y", "1", 1, True) else
-        False if value in ("false", "no", "n", "0", 0, False) else
-        None if value in ("", "na", "n/a", None) else
-        bool(value)
+        True
+        if value in ("true", "yes", "y", "1", 1, True)
+        else False
+        if value in ("false", "no", "n", "0", 0, False)
+        else None
+        if value in ("", "na", "n/a", None)
+        else bool(value)
     )
