@@ -93,6 +93,16 @@ ALL_EA_FIELDS = [
     EA_SMS_OPT,
 ]
 
+EA_FIELD_LIMITS = {
+    "Employer Name": 50,
+    "Prefix": 10,
+    "First Name": 50,
+    "Middle Name": 50,
+    "Last Name": 50,
+    "Suffix": 10,
+    "Notes": 1000,
+}
+
 
 def main():
     """Entry point for nb_to_ea script"""
@@ -118,7 +128,7 @@ def fire_main(*nb_csvs, ea_csv=None, limit=10):
             raise SystemExit(1)
 
     if len(nb_paths) > 1 and ea_csv:
-        print(f"💥 Multiple input files, but one output file")
+        print("💥 Multiple input files, but one output file")
         raise SystemExit(1)
 
     for nb_path in nb_paths:
@@ -130,10 +140,10 @@ def fire_main(*nb_csvs, ea_csv=None, limit=10):
             np.extend([f"limit{limit}"] if limit else [])
             ea_path = nb_path.with_name(f"everyaction-{'-'.join(np)}.txt")
 
-        convert(nb_path, ea_path, limit=limit)
+        convert_file(nb_path, ea_path, limit=limit)
 
 
-def convert(nb_path, ea_path, *, limit):
+def convert_file(nb_path, ea_path, *, limit):
     """Converts NationBuilder CSV to EveryAction CSV
 
     :param nb_path: Path to NationBuilder CSV
@@ -151,20 +161,14 @@ def convert(nb_path, ea_path, *, limit):
             ea_writer.writeheader()
             input_count = output_count = 0
             for nb_row in nb_reader:
-                # NationBuilder adds leading ' for Excel compatibility
+                # NationBuilder adds leading ' for Excel's benefit
                 nb_row = {k: v.lstrip("'") for k, v in nb_row.items()}
                 input_count += 1
                 if limit and input_count >= limit:
                     print(f"🛑 Stopped at {limit} -> {output_count} rows")
                     break
-                for out_row in convert_row(nb_row):
-                    ea_writer.writerow(
-                        {
-                            k: v.replace("\t", " ").replace("&", "&").strip()
-                            for k, v in out_row.items()
-                            if v
-                        }
-                    )
+                for ea_row in convert_nb_row(nb_row):
+                    ea_writer.writerow(sanitize_ea_row(ea_row))
                     output_count += 1
             else:
                 print(f"✅ {input_count} -> {output_count} rows")
@@ -172,7 +176,7 @@ def convert(nb_path, ea_path, *, limit):
     print()
 
 
-def convert_row(nb_row):
+def convert_nb_row(nb_row):
     """Converts a NationBuilder row to EveryAction row
 
     :param nb_row: NationBuilder row as dict
@@ -185,11 +189,11 @@ def convert_row(nb_row):
     identity[EA_PHONE_TYPE] = EA_PHONE_TYPE_OTHER
     identity[EA_SMS_OPT] = EA_SMS_OPT_UNKNOWN
 
-    nb_no_call = convert_bool(nb_row.get(NB_DO_NOT_CALL))
-    nb_no_contact = convert_bool(nb_row.get(NB_DO_NOT_CONTACT))
-    nb_fed_no_call = convert_bool(nb_row.get(NB_FEDERAL_DO_NOT_CALL))
-    nb_mobile_bad = convert_bool(nb_row.get(NB_MOBILE_BAD))
-    nb_mobile_opt_in = convert_bool(nb_row.get(NB_MOBILE_OPT_IN))
+    nb_no_call = to_bool(nb_row.get(NB_DO_NOT_CALL))
+    nb_no_contact = to_bool(nb_row.get(NB_DO_NOT_CONTACT))
+    nb_fed_no_call = to_bool(nb_row.get(NB_FEDERAL_DO_NOT_CALL))
+    nb_mobile_bad = to_bool(nb_row.get(NB_MOBILE_BAD))
+    nb_mobile_opt_in = to_bool(nb_row.get(NB_MOBILE_OPT_IN))
     if nb_no_contact or nb_no_call or nb_fed_no_call or nb_mobile_bad:
         identity[EA_SMS_OPT] = EA_SMS_OPT_OUT
     elif nb_mobile_opt_in is True:
@@ -225,11 +229,11 @@ def convert_row(nb_row):
         if any(amap.values()) and amap not in addr_maps:
             addr_maps.append(amap)
 
-    nb_email_opt_in = convert_bool(nb_row.get(NB_EMAIL_OPT_IN))
+    nb_email_opt_in = to_bool(nb_row.get(NB_EMAIL_OPT_IN))
     email_maps = []
     for nb_etype in NB_EMAIL_TYPES:
         email = nb_row.get(nb_etype)
-        nb_bad = convert_bool(nb_row.get(f"{nb_etype}{NB_EMAIL_BAD_SUFFIX}"))
+        nb_bad = to_bool(nb_row.get(f"{nb_etype}{NB_EMAIL_BAD_SUFFIX}"))
         if email and all(email != m[EA_EMAIL_ADDRESS] for m in email_maps):
             ea_status = (
                 EA_EMAIL_STATUS_UNSUBSCRIBED
@@ -266,7 +270,28 @@ def convert_row(nb_row):
         yield {**identity, **phone_map}
 
 
-def convert_bool(value):
+def sanitize_ea_row(row):
+    """Sanitizes an EveryAction row
+
+    :param row: EveryAction row as dict
+    :return: Row with length limits applied and bad characters stripped
+    """
+
+    out = {}
+    for k, v in row.items():
+        v = v.replace("\t", " ").strip()
+        if v:
+            limit = EA_FIELD_LIMITS.get(k, 10000)
+            if len(v) > limit:
+                v = v[:limit - 3]
+                v = v[:v.rindex(" ") + 1] if " " in v[limit // 2:] else v
+                v = v + "..."
+            out[k] = (v[:limit - 3] + "..." if len(v) > limit else v)
+
+    return out
+
+
+def to_bool(value):
     """Converts text value from CSV to boolean
 
     :param value: Value to convert
