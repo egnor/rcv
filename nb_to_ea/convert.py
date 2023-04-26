@@ -17,7 +17,8 @@ IDENTITY_MAP = dict(
 )
 
 MISC_MAP = dict(
-    note="Notes",
+    # disable for now to avoid even more duplicates
+    # note="Notes",
     employer="Employer Name",
     occupation="Occupation Name",
 )
@@ -43,6 +44,141 @@ PHONE_TYPE_MAP = dict(
     fax="Fax",
 )
 
+TAG_ACTIVIST_MAP = {
+    "AB 2808 opposition signer": "Petition: Opposed AB 2808",
+    "attended-abcs-of-rcv-20220728": "Event: Training",
+    "attended-abcs_of_rcv_20220924": "Event: Training",
+    "attended-abcs_of_rcv_20221206": "Event: Training",
+    "attended-abcs_of_rcv_20230228": "Event: Training",
+    "attended-all_volunteers_meeting_20220912": "Event: Volunteer",
+    "attended-all_volunteers_meeting_20221013": "Event: Volunteer",
+    "attended-all_volunteers_meeting_20230130": "Event: Volunteer",
+    "attended-canvass-the-california-theatre_20230304": "Action: Canvassed",
+    "attended-kickback-party-los-angeles_20221011": "Event: Social",
+    "attended-kickback-party-san-jose_20221030": "Event: Social",
+    "attended-morgan_hill_mushroom_mardi_gras_festival_20220529": "Action: Canvassed",
+    "attended-Postcard-Party-Los-Angeles-20220726": "Action: Writing",
+    "attended-Postcard-Party-San-Jose-20220813": "Action: Writing",
+    "attended-statewide-strategy-meeting-20230206": "Event: Statewide",
+    "attended-thai_new_year_songkran_festival_20220828": "Action: Canvassed",
+    "attended-volunteer-outreach-meeting-20230321": "Event: Volunteer",
+    "basecamp": "Member: On Basecamp",
+    "besj-calrcv-city-council-call-in-2022-04-06": "Action: Called/Texted",
+    "BESJ": "Campaign: San Jose",
+    "call-party-20211017-vol": "Action: Called/Texted",
+    "call-party-20211024-vol": "Action: Called/Texted",
+    "call-party-20211114-vol": "Action: Called/Texted",
+    "canvass": "Volunteer: For Canvassing",
+    "Donor_501c3": "Donor: 501(c)(3)",
+    "Donor_501c3_onetime": "Donor: 501(c)(3)",
+    "Donor_501c3_recurring": "Donor: 501(c)(3)",
+    "Donor_wants_to_donate_please_call": "Donor: Interested",
+    "Field_Ops_Phone_Bank_02_22_23_RSVP": "Action: Called/Texted",
+    "Field_Ops_Phone_Bank_02_26_23_RSVP": "Action: Called/Texted",
+    "Field_Ops_Phone_Bank_06_08_22": "Action: Called/Texted",
+    "Field_Ops_Phone_Bank_08_17_22_RSVP": "Action: Called/Texted",
+    "Field_Ops_Phone_Bank_11_13_22_RSVP": "Action: Called/Texted",
+    "Field_Ops_Phone_Bank_RSVP_02012023": "Action: Called/Texted",
+    "Field_Ops_Phone_Bank_RSVP": "Action: Called/Texted",
+    "FO-Open-to-Volunteering": "Volunteer: Interested",
+    "FO-Yes-to-Volunteering": "Volunteer: Interested",
+    "FO-Yes-to-Yearly": "Donor: Donation Interest",
+    "get-involved-donor-signup": "Donor: Donation Interest",
+    "get-involved-volunteer-signup": "Volunteer: Interested",
+    "local-campaign-Alameda": "Campaign: Alameda",
+    "local-campaign-Belmont": "Campaign: Belmont",
+    "local-campaign-Eureka": "Campaign: Eureka",
+    "local-campaign-LEAD": "Administrative: Campaign Lead",
+    "local-campaign-LosAngeles": "Campaign: Los Angeles",
+    "local-campaign-Petaluma": "Campaign: Petaluma",
+    "local-campaign-RedondoBeach": "Campaign: Redondo Beach",
+    "local-campaign-Sacramento": "Campaign: Sacramento",
+    "local-campaign-SanBernardino": "Campaign: San Bernardino",
+    "local-campaign-SanDiego": "Campaign: San Diego",
+    "local-campaign-SanJose": "Campaign: San Jose",
+    "local-campaign-SantaBarbara": "Campaign: Santa Barbara",
+    "local-campaign-SantaClaraCounty": "Campaign: Santa Clara County",
+    "MoreChoiceSanDiego-Volunteer": "Campaign: San Diego",
+    "mtg-statewide-20210921-LAUNCH": "Event: Statewide",
+    "mtg-statewide-20211110": "Event: Statewide",
+    "mtg-statewide-20211208": "Event: Statewide",
+    "mtg-statewide-20220216": "Event: Statewide",
+    "mtg-statewide-20220428": "Event: Statewide",
+    "recurring_donor": "Donor: Recurring",
+    "rsvp-abcs_of_rcv_20230924": "Event: Training",
+    "rsvp-abcs_of_rcv_20221206": "Event: Training",
+    "rsvp-abcs_of_rcv_20230228": "Event: Training",
+    "rsvp-abcs_of_rcv_20230329": "Event: Training",
+    "rsvp-all_volunteers_meeting_20220912": "Event: Volunteer",
+    "rsvp-all_volunteers_meeting_20221013": "Event: Volunteer",
+    "rsvp-all_volunteers_meeting_20230130": "Event: Volunteer",
+    "rsvp-all_volunteers_meeting_20230314": "Event: Volunteer",
+    "rsvp-annual-celebration-statewide-strategy-meeting-september_20220922": "Event: Statewide",
+    "rsvp-cal_rcv_book_club_april": "Event: Social",
+    "rsvp-calrcv-pitch-training-zoom-20211117-vol": "Event: Training",
+    "rsvp-canvass-canvass-the-grove_20220806": "Action: Canvassed",
+    "rsvp-canvass-CSUN-20211213-vol": "Action: Canvassed",
+    "rsvp-canvass-dalycity-20211204-vol": "Action: Canvassed",
+    "rsvp-canvass-hayward-20211030-vol": "Action: Canvassed",
+    "rsvp-canvass-hayward-20211127-vol": "Action: Canvassed",
+    "rsvp-canvass-the-california-theatre_20230304": "Action: Canvassed",
+    "rsvp-canvass-the-masonic-auditorium_20230304": "Action: Canvassed",
+    "rsvp-canvass-the-venice-boardwalk_20220820": "Action: Canvassed",
+    "rsvp-Field_Ops_Phone_Bank_11_20_22": "Action: Called/Texted",
+    "rsvp-Field_Ops_Phone_Bank_11_27_22": "Action: Called/Texted",
+    "rsvp-field-ops-redondo-text-bank-02132023": "Action: Called/Texted",
+    "rsvp-field-ops-redondo-text-bank-02162023": "Action: Called/Texted",
+    "rsvp-field-ops-team-meeting-canvass-prep-20220803": "Event: Training",
+    "rsvp-kchcc_latino_food_festival_menudo_pozole_cook-off_20220529": "Action: Canvassed",
+    "rsvp-kickback-orange_county_20221025": "Event: Social",
+    "rsvp-kickback-party-los-angeles_20221011": "Event: Social",
+    "rsvp-kickback-party-sacramento_20221022": "Event: Social",
+    "rsvp-kickback-party-san-jose_20221022": "Event: Social",
+    "rsvp-la_city_council_call-in_20221018": "Action: Called/Texted",
+    "rsvp-meetup-sf-20211021": "Event: Social",
+    "rsvp-morgan_hill_mushroom_mardi_gras_festival_20220529": "Action: Canvassed",
+    "rsvp-mtg-statewide-20220622": "Event: Statewide",
+    "rsvp-orange_county_meet_greet_at_mimis_cafe_20220319": "Event: Social",
+    "rsvp-Postcard-Party-Los-Angeles-20220726": "Action: Writing",
+    "rsvp-Postcard-Party-Orange-County-20220824": "Action: Writing",
+    "rsvp-Postcard-Party-Sacramento-20220730": "Action: Writing",
+    "rsvp-Postcard-Party-San-Jose-20220813": "Action: Writing",
+    "rsvp-public_comment_san_bernardino_cc_20230215": "Action: Called/Texted",
+    "rsvp-raise_a_glass_to_ranked_choice_voting_20220522": "Event: Social",
+    "rsvp-rcv_for_your_city_20230309": "Event: Training",
+    "rsvp-reddit-ama-california-politics-rcv-day-20220123": "Action: Writing",
+    "rsvp-sacramento_meet_greet_at_sac_yard": "Event: Social",
+    "rsvp_statewide_feb_2023": "Event: Statewide",
+    "rsvp-statewide-strategy-meeting-20220428": "Event: Statewide",
+    "rsvp-statewide-strategy-meeting-20220921": "Event: Statewide",
+    "rsvp-statewide-strategy-meeting-20230206": "Event: Statewide",
+    "rsvp-train_the_trainer_05-25-2022": "Event: Training",
+    "rsvp-virtual_phone_bank_santa_clara_county_action_20221211": "Action: Called/Texted",
+    "rsvp-volunteer-outreach-meeting-20230321": "Event: Volunteer",
+    "rsvp-volunteer-outreach-meeting-20230405": "Event: Volunteer",
+    "RSVPd-for-7_26_22-postcard-event": "Action: Writing",
+    "Santa Clara County Effort - Support": "Campaign: Santa Clara County",
+    "sf-lit-discussion-20211112": "Event: Social",
+    "team-diversity-equity-inclusion": "Member: DEI Team",
+    "team-endorsements-speakers": "Member: Speakers Team",
+    "team-exec-messaging": "Member: Exec Team",
+    "team-field-ops": "Member: Field Ops Team",
+    "team-fundraising": "Member: Fundraising Team",
+    "TEAM-LEAD": "Administrative: Team Lead",
+    "team-local-campaigns": "Member: Campaigns Team",
+    "team-marketing": "Member: Marketing Team",
+    "team-policy-research": "Member: Policy/Research Team",
+    "team-tech-data-mgmt": "Member: Tech/Data Team",
+    "training-callhub-2022-03-25": "Event: Training",
+    "training-calrcv-pitch-zoom-20211117": "Event: Training",
+    "training-fundraising-capital-campaign-outreach-2022-02-12": "Event: Training",
+    "training-letter-to-editor-2023-01-09": "Event: Training",
+    "VIP": "Identity: Important Person",
+    "volunteer": "Volunteer: Interested",
+
+    # TODO: z-INTEREST- tags??
+}
+
 NB_DO_NOT_CALL = "do_not_call"
 NB_DO_NOT_CONTACT = "do_not_contact"
 NB_EMAIL_BAD_SUFFIX = "_is_bad"
@@ -50,13 +186,17 @@ NB_EMAIL_OPT_IN = "email_opt_in"
 NB_FACEBOOK_USERNAME = "facebook_username"
 NB_FEDERAL_DO_NOT_CALL = "federal_donotcall"
 NB_ID = "nationbuilder_id"
+NB_IS_VOLUNTEER = "is_volunteer"
 NB_MOBILE_BAD = "is_mobile_bad"
 NB_MOBILE_OPT_IN = "mobile_opt_in"
 NB_PHONE_NUMBER_SUFFIX = "_number"
 NB_PHONE_TYPE_MOBILE = "mobile"
+NB_TAG_LIST = "tag_list"
 NB_TWITTER_LOGIN = "twitter_login"
 NB_WEBSITE = "website"
 
+EA_ACTIVIST_CODE = "Activist Code"
+EA_ACTIVIST_VOLUNTEER = "Volunteer: Interested"
 EA_EMAIL_ADDRESS = "Email Address"
 EA_EMAIL_STATUS = "Email Subscription Status"
 EA_EMAIL_STATUS_NOT_SUBSCRIBED = "Not Subscribed"
@@ -69,18 +209,24 @@ EA_EXT_FACEBOOK_URL = "Facebook URL"
 EA_EXT_NATIONBUILDER_ID = "NationBuilder ID"
 EA_EXT_OTHER = "Other Website"
 EA_EXT_TWITTER_HANDLE = "Twitter Handle"
+EA_ORIGIN_SOURCE_CODE = "Origin Source Code"
 EA_PHONE_NUMBER = "Phone"
 EA_PHONE_TYPE = "Phone Type"
 EA_PHONE_TYPE_OTHER = "Other"
-EA_SMS_OPT = "SMS Opt-In Status"
-EA_SMS_OPT_IN = "Opt-In"
-EA_SMS_OPT_OUT = "Opt-Out"
-EA_SMS_OPT_UNKNOWN = "Unknown"
+EA_PHONE_SMS_OPT = "SMS Opt-In Status"
+EA_PHONE_SMS_OPT_IN = "Opt-In"
+EA_PHONE_SMS_OPT_OUT = "Opt-Out"
+EA_PHONE_SMS_OPT_UNKNOWN = "Unknown"
+EA_RELATIONSHIP_SECONDARY = "Secondary Member"
+EA_RELATIONSHIP_TYPE = "Relationship"
+EA_RELATIONSHIP_TYPE_ORGANIZER = "Organizer"
+EA_RELATIONSHIP_TYPE_RECRUITED_BY = "Recruited By"
 
 ALL_EA_FIELDS = [
     *IDENTITY_MAP.values(),
     *ADDR_MAP.values(),
     *MISC_MAP.values(),
+    EA_ACTIVIST_CODE,
     EA_EXT_FACEBOOK_URL,
     EA_EXT_NATIONBUILDER_ID,
     EA_EXT_OTHER,
@@ -88,9 +234,12 @@ ALL_EA_FIELDS = [
     EA_EMAIL_ADDRESS,
     EA_EMAIL_STATUS,
     EA_EMAIL_TYPE,
+    EA_ORIGIN_SOURCE_CODE,
     EA_PHONE_NUMBER,
     EA_PHONE_TYPE,
-    EA_SMS_OPT,
+    EA_PHONE_SMS_OPT,
+    EA_RELATIONSHIP_SECONDARY,
+    EA_RELATIONSHIP_TYPE,
 ]
 
 EA_FIELD_LIMITS = {
@@ -187,7 +336,7 @@ def convert_nb_row(nb_row):
     identity[EA_EMAIL_TYPE] = EA_EMAIL_TYPE_OTHER
     identity[EA_EMAIL_STATUS] = EA_EMAIL_STATUS_NOT_SUBSCRIBED
     identity[EA_PHONE_TYPE] = EA_PHONE_TYPE_OTHER
-    identity[EA_SMS_OPT] = EA_SMS_OPT_UNKNOWN
+    identity[EA_PHONE_SMS_OPT] = EA_PHONE_SMS_OPT_UNKNOWN
 
     nb_no_call = to_bool(nb_row.get(NB_DO_NOT_CALL))
     nb_no_contact = to_bool(nb_row.get(NB_DO_NOT_CONTACT))
@@ -195,11 +344,11 @@ def convert_nb_row(nb_row):
     nb_mobile_bad = to_bool(nb_row.get(NB_MOBILE_BAD))
     nb_mobile_opt_in = to_bool(nb_row.get(NB_MOBILE_OPT_IN))
     if nb_no_contact or nb_no_call or nb_fed_no_call or nb_mobile_bad:
-        identity[EA_SMS_OPT] = EA_SMS_OPT_OUT
+        identity[EA_PHONE_SMS_OPT] = EA_PHONE_SMS_OPT_OUT
     elif nb_mobile_opt_in is True:
-        identity[EA_SMS_OPT] = EA_SMS_OPT_IN
+        identity[EA_PHONE_SMS_OPT] = EA_PHONE_SMS_OPT_IN
     elif nb_mobile_opt_in is False:
-        identity[EA_SMS_OPT] = EA_SMS_OPT_OUT
+        identity[EA_PHONE_SMS_OPT] = EA_PHONE_SMS_OPT_OUT
 
     misc = {ek: nb_row.get(nk, "") for nk, ek in MISC_MAP.items()}
     misc[EA_EXT_NATIONBUILDER_ID] = nb_row.get(NB_ID)
@@ -223,18 +372,16 @@ def convert_nb_row(nb_row):
     if twitter_login:
         misc[EA_EXT_TWITTER_HANDLE] = twitter_login.strip("@")
 
-    addr_maps = []
+    extra_maps = [misc]
     for nb_atype in NB_ADDR_TYPES:
         amap = {e: nb_row.get(f"{nb_atype}_{n}") for n, e in ADDR_MAP.items()}
-        if any(amap.values()) and amap not in addr_maps:
-            addr_maps.append(amap)
+        extra_maps.append(amap)
 
     nb_email_opt_in = to_bool(nb_row.get(NB_EMAIL_OPT_IN))
-    email_maps = []
     for nb_etype in NB_EMAIL_TYPES:
         email = nb_row.get(nb_etype)
         nb_bad = to_bool(nb_row.get(f"{nb_etype}{NB_EMAIL_BAD_SUFFIX}"))
-        if email and all(email != m[EA_EMAIL_ADDRESS] for m in email_maps):
+        if email:
             ea_status = (
                 EA_EMAIL_STATUS_UNSUBSCRIBED
                 if nb_bad or nb_no_contact
@@ -242,15 +389,13 @@ def convert_nb_row(nb_row):
                 if nb_email_opt_in
                 else EA_EMAIL_STATUS_NOT_SUBSCRIBED
             )
-            email_maps.append(
-                {
-                    EA_EMAIL_ADDRESS: email,
-                    EA_EMAIL_TYPE: EA_EMAIL_TYPE_PERSONAL,
-                    EA_EMAIL_STATUS: ea_status,
-                }
-            )
+            emap = {
+                EA_EMAIL_ADDRESS: email,
+                EA_EMAIL_TYPE: EA_EMAIL_TYPE_PERSONAL,
+                EA_EMAIL_STATUS: ea_status,
+            }
+            extra_maps.append(emap)
 
-    phone_maps = []
     for nb_ptype, ea_ptype in PHONE_TYPE_MAP.items():
         # Strip US country code and non-digits
         value = nb_row.get(f"{nb_ptype}{NB_PHONE_NUMBER_SUFFIX}", "")
@@ -258,16 +403,22 @@ def convert_nb_row(nb_row):
         digits = re.sub(r"^1(\d{10})$", r"\1", digits)
         if digits and "@" not in value:
             pmap = {EA_PHONE_NUMBER: digits, EA_PHONE_TYPE: ea_ptype}
-            if pmap not in phone_maps:
-                phone_maps.append(pmap)
+            extra_maps.append(pmap)
 
-    yield {**identity, **misc}
-    for addr_map in addr_maps:
-        yield {**identity, **addr_map}
-    for email_map in email_maps:
-        yield {**identity, **email_map}
-    for phone_map in phone_maps:
-        yield {**identity, **phone_map}
+    if to_bool(nb_row.get(NB_IS_VOLUNTEER)):
+        extra_maps.append({EA_ACTIVIST_CODE: EA_ACTIVIST_VOLUNTEER})
+
+    nb_tags = [t.strip() for t in nb_row.get(NB_TAG_LIST).split(",")]
+    for nb_tag in nb_tags:
+        ea_code = TAG_ACTIVIST_MAP.get(nb_tag)
+        if ea_code:
+            extra_maps.append({EA_ACTIVIST_CODE: ea_code})
+
+    return [
+        {**identity, **dict(extra)}
+        for extra in sorted(set(tuple(m.items()) for m in extra_maps))
+        if any(v for k, v in extra)
+    ]
 
 
 def sanitize_ea_row(row):
@@ -299,12 +450,10 @@ def to_bool(value):
     """
 
     value = value.lower() if isinstance(value, str) else value
-    return (
-        True
-        if value in ("true", "yes", "y", "1", 1, True)
-        else False
-        if value in ("false", "no", "n", "0", 0, False)
-        else None
-        if value in ("", "na", "n/a", None)
-        else bool(value)
-    )
+    if value in ("true", "yes", "y", "1", 1, True):
+        return True
+    if value in ("false", "no", "n", "0", 0, False):
+        return False
+    if value in ("", "na", "n/a", None):
+        return None
+    return bool(value)
