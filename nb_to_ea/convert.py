@@ -43,7 +43,6 @@ PHONE_TYPE_MAP = dict(
 )
 
 TAG_ACTIVIST_MAP = {
-    # "AB 2808 opposition signer": "Petition: Opposed AB 2808",
     "attended-abcs-of-rcv-20220728": "Volunteer: Historic Interest",
     "attended-abcs_of_rcv_20220924": "Volunteer: Historic Interest",
     "attended-abcs_of_rcv_20221206": "Volunteer: Historic Interest",
@@ -52,22 +51,20 @@ TAG_ACTIVIST_MAP = {
     "attended-all_volunteers_meeting_20221013": "Volunteer: Historic Interest",
     "attended-all_volunteers_meeting_20230130": "Volunteer: Historic Interest",
     "attended-canvass-the-california-theatre_20230304": "Volunteer: Historic Interest",
-    # "attended-kickback-party-los-angeles_20221011": "Event: Social",
-    # "attended-kickback-party-san-jose_20221030": "Event: Social",
     "attended-morgan_hill_mushroom_mardi_gras_festival_20220529": "Volunteer: Historic Interest",
     "attended-Postcard-Party-Los-Angeles-20220726": "Volunteer: Historic Interest",
     "attended-Postcard-Party-San-Jose-20220813": "Volunteer: Historic Interest",
-    # "attended-statewide-strategy-meeting-20230206": "Event: Statewide",
     "attended-thai_new_year_songkran_festival_20220828": "Volunteer: Historic Interest",
     "attended-volunteer-outreach-meeting-20230321": "Volunteer: Historic Interest",
     "basecamp": "Volunteer: Historic Interest",
     "besj-calrcv-city-council-call-in-2022-04-06": "Volunteer: Historic Interest",
-    # "BESJ": "Campaign: San Jose",
     "call-party-20211017-vol": "Volunteer: Historic Interest",
     "call-party-20211024-vol": "Volunteer: Historic Interest",
     "call-party-20211114-vol": "Volunteer: Historic Interest",
+    "canvass-csulb-university-student-union_20220301-rsvp": "Volunteer: Historic Interest",
+    "canvass-elac-campus-center_20220222-rsvp": "Volunteer: Historic Interest",
+    "canvass-smc-quad-student-union_20220125-rsvp": "Volunteer: Historic Interest",
     "canvass": "Volunteer: For Canvassing",
-    # "CfER": "Organization: CfER",
     "digital-ad-volunteer-signup": "Volunteer: Historic Interest",
     "Donor_501c3": "Donor: 501(c)(3)",
     "Donor_501c3_onetime": "Donor: 501(c)(3)",
@@ -101,11 +98,6 @@ TAG_ACTIVIST_MAP = {
     "Maybe-Volunteer": "Volunteer: Historic Interest",
     "MEDIA": "Press: Media Member",
     "MoreChoiceSanDiego-Volunteer": "Volunteer: Historic Interest",
-    # "mtg-statewide-20210921-LAUNCH": "Event: Statewide",
-    # "mtg-statewide-20211110": "Event: Statewide",
-    # "mtg-statewide-20211208": "Event: Statewide",
-    # "mtg-statewide-20220216": "Event: Statewide",
-    # "mtg-statewide-20220428": "Event: Statewide",
     "POL-CANDIDATE-Local": "Political: Candidate",
     "POL-CANDIDATE-State-Assembly": "Political: Candidate",
     "POL-CANDIDATE-State-Senate": "Political: Candidate",
@@ -113,19 +105,15 @@ TAG_ACTIVIST_MAP = {
     "POL-ELECTED-OFFICIAL": "Political: Elected",
     "POL-FORMER": "Political: Insider",
     "politician": "Political: Insider",
-    # "RANK-THE-VOTE": "Organization: Rank The Vote",
     "recurring_donor": "Donor: Recurring",
-    "rsvp-abcs_of_rcv_20230924": "Volunteer: Historic Interest",
     "rsvp-abcs_of_rcv_20221206": "Volunteer: Historic Interest",
     "rsvp-abcs_of_rcv_20230228": "Volunteer: Historic Interest",
     "rsvp-abcs_of_rcv_20230329": "Volunteer: Historic Interest",
+    "rsvp-abcs_of_rcv_20230924": "Volunteer: Historic Interest",
     "rsvp-all_volunteers_meeting_20220912": "Volunteer: Historic Interest",
     "rsvp-all_volunteers_meeting_20221013": "Volunteer: Historic Interest",
     "rsvp-all_volunteers_meeting_20230130": "Volunteer: Historic Interest",
     "rsvp-all_volunteers_meeting_20230314": "Volunteer: Historic Interest",
-    # "rsvp-annual-celebration-statewide-strategy-meeting-september_20220922": "Event: Statewide",
-    # "rsvp-cal_rcv_book_club_april": "Event: Social",
-    # "rsvp-calrcv-pitch-training-zoom-20211117-vol": "Event: Training",
     "rsvp-canvass-canvass-the-grove_20220806": "Volunteer: Historic Interest",
     "rsvp-canvass-CSUN-20211213-vol": "Volunteer: Historic Interest",
     "rsvp-canvass-dalycity-20211204-vol": "Volunteer: Historic Interest",
@@ -134,41 +122,31 @@ TAG_ACTIVIST_MAP = {
     "rsvp-canvass-the-california-theatre_20230304": "Volunteer: Historic Interest",
     "rsvp-canvass-the-masonic-auditorium_20230304": "Volunteer: Historic Interest",
     "rsvp-canvass-the-venice-boardwalk_20220820": "Volunteer: Historic Interest",
+    "RSVPd-for-7_26_22-postcard-event": "Volunteer: Historic Interest",
     "rsvp-Field_Ops_Phone_Bank_11_20_22": "Volunteer: Historic Interest",
     "rsvp-Field_Ops_Phone_Bank_11_27_22": "Volunteer: Historic Interest",
     "rsvp-field-ops-redondo-text-bank-02132023": "Volunteer: Historic Interest",
     "rsvp-field-ops-redondo-text-bank-02162023": "Volunteer: Historic Interest",
     "rsvp-field-ops-team-meeting-canvass-prep-20220803": "Volunteer: Historic Interest",
     "rsvp-kchcc_latino_food_festival_menudo_pozole_cook-off_20220529": "Volunteer: Historic Interest",
-    # "rsvp-kickback-orange_county_20221025": "Event: Social",
-    # "rsvp-kickback-party-los-angeles_20221011": "Event: Social",
-    # "rsvp-kickback-party-sacramento_20221022": "Event: Social",
-    # "rsvp-kickback-party-san-jose_20221022": "Event: Social",
     "rsvp-la_city_council_call-in_20221018": "Volunteer: Historic Interest",
-    # "rsvp-meetup-sf-20211021": "Event: Social",
     "rsvp-morgan_hill_mushroom_mardi_gras_festival_20220529": "Volunteer: Historic Interest",
-    # "rsvp-mtg-statewide-20220622": "Event: Statewide",
-    # "rsvp-orange_county_meet_greet_at_mimis_cafe_20220319": "Event: Social",
     "rsvp-Postcard-Party-Los-Angeles-20220726": "Volunteer: Historic Interest",
     "rsvp-Postcard-Party-Orange-County-20220824": "Volunteer: Historic Interest",
     "rsvp-Postcard-Party-Sacramento-20220730": "Volunteer: Historic Interest",
     "rsvp-Postcard-Party-San-Jose-20220813": "Volunteer: Historic Interest",
     "rsvp-public_comment_san_bernardino_cc_20230215": "Volunteer: Historic Interest",
-    # "rsvp-raise_a_glass_to_ranked_choice_voting_20220522": "Event: Social",
     "rsvp-rcv_for_your_city_20230309": "Volunteer: Historic Interest",
     "rsvp-reddit-ama-california-politics-rcv-day-20220123": "Volunteer: Historic Interest",
-    # "rsvp-sacramento_meet_greet_at_sac_yard": "Event: Social",
-    # "rsvp_statewide_feb_2023": "Event: Statewide",
-    # "rsvp-statewide-strategy-meeting-20220428": "Event: Statewide",
-    # "rsvp-statewide-strategy-meeting-20220921": "Event: Statewide",
-    # "rsvp-statewide-strategy-meeting-20230206": "Event: Statewide",
     "rsvp-train_the_trainer_05-25-2022": "Volunteer: Historic Interest",
     "rsvp-virtual_phone_bank_santa_clara_county_action_20221211": "Volunteer: Historic Interest",
     "rsvp-volunteer-outreach-meeting-20230321": "Volunteer: Historic Interest",
     "rsvp-volunteer-outreach-meeting-20230405": "Volunteer: Historic Interest",
-    "RSVPd-for-7_26_22-postcard-event": "Volunteer: Historic Interest",
     "Santa Clara County Effort - Support": "Volunteer: Historic Interest",
-    # "sf-lit-discussion-20211112": "Event: Social",
+    "tabling-central-ave-farmers-market_20220203-rsvp": "Volunteer: Historic Interest",
+    "tabling-central-ave-farmers-market_20220310-rsvp": "Volunteer: Historic Interest",
+    "tabling-crenshaw-farmers-market_20220219-rsvp": "Volunteer: Historic Interest",
+    "tabling-crenshaw-farmers-market_20220326-rsvp": "Volunteer: Historic Interest",
     "team-diversity-equity-inclusion": "Volunteer: Historic Interest",
     "team-endorsements-speakers": "Volunteer: Historic Interest",
     "team-exec-messaging": "Volunteer: Historic Interest",
@@ -184,8 +162,8 @@ TAG_ACTIVIST_MAP = {
     "training-fundraising-capital-campaign-outreach-2022-02-12": "Volunteer: Historic Interest",
     "training-letter-to-editor-2023-01-09": "Volunteer: Historic Interest",
     "VIP": "Identity: Important Person",
-    "volunteer": "Volunteer: Historic Interest",
     "volunteer-liveo-south-la": "Volunteer: Historic Interest",
+    "volunteer": "Volunteer: Historic Interest",
     "z-INTEREST-team-data-mgmt": "Volunteer: Historic Interest",
     "z-INTEREST-team-diversity-equity-inclusion": "Volunteer: Historic Interest",
     "z-INTEREST-team-endorsements-own-group": "Volunteer: Historic Interest",
@@ -198,79 +176,79 @@ TAG_ACTIVIST_MAP = {
     "z-INTEREST-team-speakers": "Volunteer: Historic Interest",
     "z-INTEREST-team-tech-data-mgmt": "Volunteer: Historic Interest",
     "z-INTEREST-team-volunteer-onboarding": "Volunteer: Historic Interest",
-    "z-INTEREST-vol-event-host": "Volunteer: Historic Interest",
     "z-INTEREST-vol-event-host-speakers": "Volunteer: Historic Interest",
+    "z-INTEREST-vol-event-host": "Volunteer: Historic Interest",
     "z-INTEREST-vol-local-campaigns": "Volunteer: Historic Interest",
 }
 
+# There can be only one origin source code per person; the first match wins.
 TAG_SOURCE_MAP = {
-    "BESJ-intake-contact": "BESJ Website",
-    "BESJ-intake-join": "BESJ Website",
-    "canvass-cal-state-fullerton-2022-02-08": "Canvass via NB",
-    "canvass-CalStateLA-20211206-vol": "Canvass via NB",
-    "canvass-csuf-titan-walk-_20220208": "Canvass via NB",
-    "canvass-csulb-university-student-union_20220301-rsvp": "Canvass via NB",
-    "canvass-elac-campus-center_20220222-rsvp": "Canvass via NB",
-    "canvass-foothill-college-political-awareness-day-20220511": "Canvass via NB",
-    "canvass-hayward-farmers-mkt-20211030": "Canvass via NB",
-    "canvass-hercules-bay-festival-20211003": "Canvass via NB",
-    "canvass-hercules-bay-festival-20211003-vol": "Canvass via NB",
-    "canvass-irvine-20211024-vol": "Canvass via NB",
-    "canvass-irvine-andrew-yang-foward-book-tour-20211024": "Canvass via NB",
-    "canvass-la-basic-income-march-20210925": "Canvass via NB",
-    "canvass-la-bim-20210925-vol": "Canvass via NB",
-    "canvass-la-cal-state-20211206": "Canvass via NB",
-    "canvass-libertarian-convention-20220218": "Canvass via NB",
-    "canvass-menlo-park-voting-center-20211102": "Canvass via NB",
-    "canvass-mv-basic-income-march-20210925": "Canvass via NB",
-    "canvass-mv-bim-20210925-vol": "Canvass via NB",
-    "canvass-northridge-cal-state-20211213": "Canvass via NB",
-    "canvass-palo-alto-farmers-market-2022-01-23": "Canvass via NB",
-    "canvass-palo-alto-farmers-market-2022-01-30": "Canvass via NB",
-    "canvass-seic-20211102-vol": "Canvass via NB",
-    "canvass-sf-20211021-vol": "Canvass via NB",
-    "canvass-sf-20211023-vol": "Canvass via NB",
-    "canvass-sf-andrew-yang-foward-book-tour-20211023": "Canvass via NB",
-    "canvass-smc-quad-student-union_20220125-rsvp": "Canvass via NB",
-    "canvass-ucla-bruin-walk-_20220106": "Canvass via NB",
-    "canvass-venice-beach-20220820": "Canvass via NB",
-    "digital-ad-supporter-signup": "Digital Ads via NB",
-    "digital-ad-volunteer-signup": "Digital Ads via NB",
-    "event-panel-discussion-20220209": "NationBuilder Event",
-    "get-involved-donor-signup": "NationBuilder Website",
-    "get-involved-volunteer-and-donor-signup": "NationBuilder Website",
-    "get-involved-volunteer-signup": "NationBuilder Website",
-    "OK to do not email": "Founding",
-    "SD-launch-event-20211118": "NationBuilder Event",
-    "signup-bernie-sanders-event-mar-4-2023": "Canvass via NB",
-    "signup-canvass-canvass-the-grove_20220806": "Canvass via NB",
-    "signup-imported-from-AB2808-capitol-canary-campaign": "Anti-AB2808 Petition via NB",
+    # Founding imports
+    "mtg-statewide-20210921-LAUNCH": "Founding",
+    "rsvp-mtg-statewide-20210921-LAUNCH-noshow": "Founding",
     "signup-imported-from-Alexandra-Chandler-RCV-Supporters-in-CA": "Founding from Rank The Vote",
-    "signup-imported-from-Benevity": "Benevity",
     "signup-imported-from-groups-promo-tracker-2021-09-13": "Founding",
     "signup-imported-from-launch-Zoom-registrations": "Founding",
     "signup-imported-from-slack": "Founding",
     "signup-imported-from-VCMA-NationBuilder": "Founding from Voter Choice MA",
+    "OK to do not email": "Founding",
+
+    # Event tags that indicate origin, sorted by date
+    # 2021
+    "canvass-la-basic-income-march-20210925": "Canvass via NB",
+    "canvass-mv-basic-income-march-20210925": "Canvass via NB",
+    "canvass-hercules-bay-festival-20211003": "Canvass via NB",
+    "canvass-sf-andrew-yang-foward-book-tour-20211023": "Canvass via NB",
+    "canvass-irvine-andrew-yang-foward-book-tour-20211024": "Canvass via NB",
+    "canvass-hayward-farmers-mkt-20211030": "Canvass via NB",
+    "canvass-menlo-park-voting-center-20211102": "Canvass via NB",
+    "SD-launch-event-20211118": "NationBuilder Event",
+    "canvass-la-cal-state-20211206": "Canvass via NB",
+    "canvass-northridge-cal-state-20211213": "Canvass via NB",
+    "sj-campaign-launch-20211115": "NationBuilder Event",
+    # 2022
+    "canvass-ucla-bruin-walk-_20220106": "Canvass via NB",
+    "canvass-palo-alto-farmers-market-2022-01-23": "Canvass via NB",
+    "canvass-palo-alto-farmers-market-2022-01-30": "Canvass via NB",
+    "canvass-cal-state-fullerton-2022-02-08": "Canvass via NB",
+    "event-panel-discussion-20220209": "NationBuilder Event",
+    "canvass-libertarian-convention-20220218": "Canvass via NB",
+    "table-san-bernardino-arts-fest-20220319": "Canvass via NB",
+    # (The anti-AB2808 effort was Feb-Apr 2022)
+    "signup-imported-from-AB2808-capitol-canary-campaign": "Anti-AB2808 Petition via NB",
+    "sm-Twitter-AB2808": "Twitter via NB",
+    # 2022 con't
+    "canvass-foothill-college-political-awareness-day-20220511": "Canvass via NB",
+    "table-morgan-hill-mushroom-mardi-gras-20220528": "Canvass via NB",
+    "signup-canvass-canvass-the-grove_20220806": "Canvass via NB",
+    "canvass-venice-beach-20220820": "Canvass via NB",
+    "signup-thai-new-year-songkran-festival-20220828": "Canvass via NB",
+    "ucsb-calpirg-event-20220224": "Canvass via NB",
+    # 2023
+    "signup-bernie-sanders-event-mar-4-2023": "Canvass via NB",
+
+    # Signup tags that don't include a date
+    "digital-ad-supporter-signup": "Digital Ads via NB",
+    "digital-ad-volunteer-signup": "Digital Ads via NB",
+    "get-involved-donor-signup": "NationBuilder Website",
+    "get-involved-volunteer-and-donor-signup": "NationBuilder Website",
+    "get-involved-volunteer-signup": "NationBuilder Website",
+    "signup-imported-from-Benevity": "Benevity",
     "signup-liveo": "Canvass via NB",
     "signup-manually-added-to-NB": "Manual Add via NB",
     "signup-recruiter": "Direct Recruit via NB",
-    "signup-thai-new-year-songkran-festival-20220828": "Canvass via NB",
-    "signup-website": "NationBuilder Website",
     "signup-website-contact": "NationBuilder Website",
     "signup-website-donate": "NationBuilder Website",
     "signup-website-event": "NationBuilder Website",
-    "signup-zoom": "NationBuilder Event",
+    "signup-website": "NationBuilder Website",
     "signup-zoom-attended": "NationBuilder Event",
+    "signup-zoom": "NationBuilder Event",
+
+    # Low confidence sources
     "sm-Facebook": "Facebook via NB",
     "sm-Twitter": "Twitter via NB",
-    "sm-Twitter-AB2808": "Twitter via NB",
-    "table-morgan-hill-mushroom-mardi-gras-20220528": "Canvass via NB",
-    "table-san-bernardino-arts-fest-20220319": "Canvass via NB",
-    "tabling-central-ave-farmers-market_20220203-rsvp": "Canvass via NB",
-    "tabling-central-ave-farmers-market_20220310-rsvp": "Canvass via NB",
-    "tabling-crenshaw-farmers-market_20220219-rsvp": "Canvass via NB",
-    "tabling-crenshaw-farmers-market_20220326-rsvp": "Canvass via NB",
-    "ucsb-calpirg-event-20220224": "Canvass via NB",
+    "BESJ-intake-contact": "BESJ Website",
+    "BESJ-intake-join": "BESJ Website",
 }
 
 NB_DO_NOT_CALL = "do_not_call"
@@ -359,7 +337,9 @@ def main():
     fire.Fire(fire_main)
 
 
-def fire_main(*nb_csvs, ea_csv=None, limit=10, add_notes=False):
+def fire_main(
+    *nb_csvs, *, ea_csv=None, limit=0, add_origin=False, add_notes=False
+):
     """Converts NationBuilder CSV(s) to EveryAction CSV(s)
 
     :param nb_csvs: NationBuilder CSV(s) to convert (searches . by default)
@@ -388,10 +368,13 @@ def fire_main(*nb_csvs, ea_csv=None, limit=10, add_notes=False):
             np.extend([f"limit{limit}"] if limit else [])
             ea_path = nb_path.with_name(f"everyaction-{'-'.join(np)}.txt")
 
-        convert_file(nb_path, ea_path, limit=limit, add_notes=add_notes)
+        convert_file(
+            nb_path, ea_path,
+            limit=limit, add_origin=add_origin, add_notes=add_notes
+        )
 
 
-def convert_file(nb_path, ea_path, *, limit, add_notes):
+def convert_file(nb_path, ea_path, *, limit, **row_opts)
     """Converts NationBuilder CSV to EveryAction CSV
 
     :param nb_path: Path to NationBuilder CSV
@@ -415,7 +398,7 @@ def convert_file(nb_path, ea_path, *, limit, add_notes):
                 if limit and input_count >= limit:
                     print(f"🛑 Stopped at {limit} -> {output_count} rows")
                     break
-                for ea_row in convert_nb_row(nb_row, add_notes=add_notes):
+                for ea_row in convert_nb_row(nb_row, **row_opts):
                     ea_writer.writerow(sanitize_ea_row(ea_row))
                     output_count += 1
             else:
@@ -424,7 +407,7 @@ def convert_file(nb_path, ea_path, *, limit, add_notes):
     print()
 
 
-def convert_nb_row(nb_row, *, add_notes):
+def convert_nb_row(nb_row, *, add_notes, add_origin):
     """Converts a NationBuilder row to EveryAction row
 
     :param nb_row: NationBuilder row as dict
@@ -471,14 +454,14 @@ def convert_nb_row(nb_row, *, add_notes):
     if twitter_login:
         misc[EA_EXT_TWITTER_HANDLE] = twitter_login.strip("@")
 
-    misc[EA_ORIGIN_SOURCE_CODE] = EA_ORIGIN_SOURCE_CODE_OTHER
-    nb_tag_list = nb_row.get(NB_TAG_LIST)
-    nb_tags = [t.strip() for t in nb_tag_list.split(",")] if nb_tag_list else []
-    for nb_tag in nb_tags:
-        ea_source_code = TAG_SOURCE_MAP.get(nb_tag)
-        if ea_source_code:
-            misc[EA_ORIGIN_SOURCE_CODE] = ea_source_code
-            break  # Take the code from the first matching tag
+    if add_origin:
+        misc[EA_ORIGIN_SOURCE_CODE] = EA_ORIGIN_SOURCE_CODE_OTHER
+        nb_tag_list = nb_row.get(NB_TAG_LIST)
+        nb_tags = {t.strip() for t in nb_tag_list.split(",") if t.strip()}
+        for nb_tag, ea_source_code in TAG_SOURCE_MAP.items():
+            if nb_tag in nb_tags:
+                misc[EA_ORIGIN_SOURCE_CODE] = ea_source_code
+                break  # Take the code from the first tag in the map
 
     extra_maps = [misc]
 
