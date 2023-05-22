@@ -7,7 +7,7 @@ version = "0.1"
 
 dependencies = [
     "attrs",
-    "fire",
+    "click",
     "prettyprinter",
 ]
 
@@ -20,7 +20,8 @@ dev = [
 ]
 
 [project.scripts]
-nb_to_ea = "nb_to_ea.convert:main"
+nb_to_ea_people = "nb_to_ea.people:main"
+nb_to_ea_financial = "nb_to_ea.financial:main"
 
 [tool.black]
 line-length = 80

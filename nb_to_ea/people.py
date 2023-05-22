@@ -1,14 +1,14 @@
-"""Script to migrate data from NationBuilder to EveryAction"""
+"""Script to migrate contact data from NationBuilder to EveryAction"""
 
 import csv
 import re
 import signal
 from pathlib import Path
 
-import fire  # type: ignore
+import click
 
 IDENTITY_MAP = dict(
-    nationbuilder_id="Source ID",
+    nationbuilder_id="Source NationBuilder ID",
     prefix="Prefix",
     first_name="First Name",
     middle_name="Middle Name",
@@ -40,6 +40,11 @@ PHONE_TYPE_MAP = dict(
     work_phone="Work",
     mobile="Cell",
     fax="Fax",
+)
+
+RELATIONSHIP_MAP = dict(
+    recruiter_id="Recruited By",
+    parent_id="Organizer",
 )
 
 TAG_ACTIVIST_MAP = {
@@ -192,7 +197,6 @@ TAG_SOURCE_MAP = {
     "signup-imported-from-slack": "Founding",
     "signup-imported-from-VCMA-NationBuilder": "Founding from Voter Choice MA",
     "OK to do not email": "Founding",
-
     # Event tags that indicate origin, sorted by date
     # 2021
     "canvass-la-basic-income-march-20210925": "Canvass via NB",
@@ -226,7 +230,6 @@ TAG_SOURCE_MAP = {
     "ucsb-calpirg-event-20220224": "Canvass via NB",
     # 2023
     "signup-bernie-sanders-event-mar-4-2023": "Canvass via NB",
-
     # Signup tags that don't include a date
     "digital-ad-supporter-signup": "Digital Ads via NB",
     "digital-ad-volunteer-signup": "Digital Ads via NB",
@@ -243,7 +246,6 @@ TAG_SOURCE_MAP = {
     "signup-website": "NationBuilder Website",
     "signup-zoom-attended": "NationBuilder Event",
     "signup-zoom": "NationBuilder Event",
-
     # Low confidence sources
     "sm-Facebook": "Facebook via NB",
     "sm-Twitter": "Twitter via NB",
@@ -269,7 +271,6 @@ NB_TWITTER_LOGIN = "twitter_login"
 NB_WEBSITE = "website"
 
 EA_ACTIVIST_CODE = "Activist Code"
-# EA_ACTIVIST_NATIONBUILDER = "Origins: NationBuilder"
 EA_ACTIVIST_VOLUNTEER = "Volunteer: Historic Interest"
 EA_EMAIL_ADDRESS = "Email Address"
 EA_EMAIL_STATUS = "Email Subscription Status"
@@ -293,10 +294,8 @@ EA_PHONE_SMS_OPT = "SMS Opt-In Status"
 EA_PHONE_SMS_OPT_IN = "Opt-In"
 EA_PHONE_SMS_OPT_OUT = "Opt-Out"
 EA_PHONE_SMS_OPT_UNKNOWN = "Unknown"
-EA_RELATIONSHIP_SECONDARY = "Secondary Member"
+EA_RELATIONSHIP_SECONDARY = "Secondary Member NationBuilder ID"
 EA_RELATIONSHIP_TYPE = "Relationship"
-EA_RELATIONSHIP_TYPE_ORGANIZER = "Organizer"
-EA_RELATIONSHIP_TYPE_RECRUITED_BY = "Recruited By"
 
 ALL_EA_FIELDS = [
     *IDENTITY_MAP.values(),
@@ -330,21 +329,16 @@ EA_FIELD_LIMITS = {
 }
 
 
-def main():
-    """Entry point for nb_to_ea script"""
+@click.command()
+@click.argument("nb_csvs", nargs=-1)
+@click.option("--ea_csv", help="EveryAction CSV to write")
+@click.option("--limit", type=int, help="Limit to first N records")
+@click.option("--add_origin", is_flag=True, help="Add origin source code")
+@click.option("--add_notes", is_flag=True, help="Add notes")
+def main(nb_csvs, ea_csv, limit, add_origin, add_notes):
+    """Converts NationBuilder CSV(s) to EveryAction CSV(s)"""
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)  # Sane ^C behavior
-    fire.Fire(fire_main)
-
-
-def fire_main(
-    *nb_csvs, *, ea_csv=None, limit=0, add_origin=False, add_notes=False
-):
-    """Converts NationBuilder CSV(s) to EveryAction CSV(s)
-
-    :param nb_csvs: NationBuilder CSV(s) to convert (searches . by default)
-    :param ea_csv: EveryAction CSV to write (default based on nb_csvs)
-    """
 
     if nb_csvs:
         nb_paths = [Path(nb_csv) for nb_csv in nb_csvs]
@@ -369,12 +363,15 @@ def fire_main(
             ea_path = nb_path.with_name(f"everyaction-{'-'.join(np)}.txt")
 
         convert_file(
-            nb_path, ea_path,
-            limit=limit, add_origin=add_origin, add_notes=add_notes
+            nb_path,
+            ea_path,
+            limit=limit,
+            add_origin=add_origin,
+            add_notes=add_notes,
         )
 
 
-def convert_file(nb_path, ea_path, *, limit, **row_opts)
+def convert_file(nb_path, ea_path, *, limit, **row_opts):
     """Converts NationBuilder CSV to EveryAction CSV
 
     :param nb_path: Path to NationBuilder CSV
@@ -408,7 +405,7 @@ def convert_file(nb_path, ea_path, *, limit, **row_opts)
 
 
 def convert_nb_row(nb_row, *, add_notes, add_origin):
-    """Converts a NationBuilder row to EveryAction row
+    """Converts a NationBuilder row to list of EveryAction rows
 
     :param nb_row: NationBuilder row as dict
     :return: EveryAction row(s) as sequence of dicts
@@ -454,21 +451,24 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
     if twitter_login:
         misc[EA_EXT_TWITTER_HANDLE] = twitter_login.strip("@")
 
+    if nb_row.get(NB_IS_VOLUNTEER):
+        misc[EA_ACTIVIST_CODE] = EA_ACTIVIST_VOLUNTEER
+
+    nb_tag_list = nb_row.get(NB_TAG_LIST)
+    nb_tags = {t.strip() for t in nb_tag_list.split(",") if t.strip()}
     if add_origin:
         misc[EA_ORIGIN_SOURCE_CODE] = EA_ORIGIN_SOURCE_CODE_OTHER
-        nb_tag_list = nb_row.get(NB_TAG_LIST)
-        nb_tags = {t.strip() for t in nb_tag_list.split(",") if t.strip()}
         for nb_tag, ea_source_code in TAG_SOURCE_MAP.items():
             if nb_tag in nb_tags:
                 misc[EA_ORIGIN_SOURCE_CODE] = ea_source_code
                 break  # Take the code from the first tag in the map
 
-    extra_maps = [misc]
+    output_rows = [misc]
 
     if add_notes:
         nb_note = nb_row.get(NB_NOTE)
         if add_notes and nb_note:
-            extra_maps.append({EA_NOTES: f"NB note: {nb_note}"})
+            output_rows.append({EA_NOTES: f"NB note: {nb_note}"})
 
         nb_tag_notes = []
         for tag in sorted(nb_tags):
@@ -477,15 +477,15 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
             nb_tag_notes[-1] += (", " if nb_tag_notes[-1] else "") + tag
 
         if len(nb_tag_notes) == 1:
-            extra_maps.append({EA_NOTES: f"NB tags: {nb_tag_notes[0]}"})
+            output_rows.append({EA_NOTES: f"NB tags: {nb_tag_notes[0]}"})
         else:
             for li, nb_tag_note in enumerate(nb_tag_notes, 1):
                 tag_note = f"NB tags {li}/{len(nb_tag_notes)}: {nb_tag_note}"
-                extra_maps.append({EA_NOTES: tag_note})
+                output_rows.append({EA_NOTES: tag_note})
 
     for nb_atype in NB_ADDR_TYPES:
         amap = {e: nb_row.get(f"{nb_atype}_{n}") for n, e in ADDR_MAP.items()}
-        extra_maps.append(amap)
+        output_rows.append(amap)
 
     nb_email_opt_in = to_bool(nb_row.get(NB_EMAIL_OPT_IN))
     for nb_etype in NB_EMAIL_TYPES:
@@ -504,7 +504,7 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
                 EA_EMAIL_TYPE: EA_EMAIL_TYPE_PERSONAL,
                 EA_EMAIL_STATUS: ea_status,
             }
-            extra_maps.append(emap)
+            output_rows.append(emap)
 
     for nb_ptype, ea_ptype in PHONE_TYPE_MAP.items():
         # Strip US country code and non-digits
@@ -513,20 +513,27 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
         digits = re.sub(r"^1(\d{10})$", r"\1", digits)
         if digits and "@" not in value:
             pmap = {EA_PHONE_NUMBER: digits, EA_PHONE_TYPE: ea_ptype}
-            extra_maps.append(pmap)
-
-    if to_bool(nb_row.get(NB_IS_VOLUNTEER)):
-        extra_maps.append({EA_ACTIVIST_CODE: EA_ACTIVIST_VOLUNTEER})
+            output_rows.append(pmap)
 
     for nb_tag in nb_tags:
         ea_code = TAG_ACTIVIST_MAP.get(nb_tag)
         if ea_code:
-            extra_maps.append({EA_ACTIVIST_CODE: ea_code})
+            output_rows.append({EA_ACTIVIST_CODE: ea_code})
+
+    for nb_rel, ea_rel in RELATIONSHIP_MAP.items():
+        nb_rel_target = nb_row.get(nb_rel)
+        if nb_rel_target:
+            output_rows.append(
+                {
+                    EA_RELATIONSHIP_TYPE: ea_rel,
+                    EA_RELATIONSHIP_SECONDARY: nb_rel_target,
+                }
+            )
 
     return [
-        {**identity, **dict(extra)}
-        for extra in sorted(set(tuple(m.items()) for m in extra_maps))
-        if any(v for k, v in extra)
+        {**identity, **dict(output_row)}
+        for output_row in sorted(set(tuple(m.items()) for m in output_rows))
+        if any(v for k, v in output_row)
     ]
 
 
