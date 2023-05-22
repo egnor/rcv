@@ -62,22 +62,29 @@ NB_DONOR_NAME = "signup_full_name"
 NB_ID = "nationbuilder_id"
 NB_METHOD = "payment_type_name"
 NB_NOTE = "note"
-NB_PAGE_SLUG = "page_slug"
+NB_PAGE = "page_slug"
 NB_RECRUITER_ID = "recruiter_id"
 NB_RECRUITER_NAME = "recruiter_name"
 NB_RECURRING = "recurring_donation_status"
 NB_TRACKING = "tracking_code_slug"
 
 EA_NOTE = "Internal Note"
-EA_RECRUITER_NAME = "Contact Attribution"
 EA_SOURCE_CODE = "Source Code"
 
 ALL_EA_FIELDS = [
     *FIELD_MAP.values(),
-    EA_RECRUITER_NAME,
     EA_SOURCE_CODE,
     EA_NOTE,
 ]
+
+EA_FIELD_LIMITS = {
+    "Prefix": 10,
+    "First Name": 50,
+    "Middle Name": 50,
+    "Last Name": 50,
+    "Suffix": 10,
+    "Internal Note": 255,
+}
 
 
 @click.command()
@@ -150,18 +157,19 @@ def convert_nb_row(nb):
 
     ea_row = {ek: nb.get(nk, "") for nk, ek in FIELD_MAP.items()}
 
-    if nb.get(NB_DONOR_ID) != nb.get(NB_RECRUITER_ID):
-        ea_row[EA_RECRUITER_NAME] = nb.get(NB_RECRUITER_NAME)
+    nb_donor_id = nb.get(NB_DONOR_ID)
+    nb_rec_id = nb.get(NB_RECRUITER_ID)
+    nb_rec = nb.get(NB_RECRUITER_NAME) if nb_rec_id != nb_donor_id else ""
 
     ea_row[EA_NOTE] = (
         f"From NB"
         + (f": {nb.get(NB_NOTE)} " if nb.get(NB_NOTE) else " ")
-        + f"*** id={nb.get(NB_ID)} "
-        f"donor=[{nb.get(NB_DONOR_NAME)}] "
-        f"page={nb.get(NB_PAGE_SLUG)} "
-        f"tracking={nb.get(NB_TRACKING)} "
-        f"recurring={nb.get(NB_RECURRING) or 'none'} "
-        f"method=[{nb.get(NB_METHOD)}]"
+        + f"*** txid={nb.get(NB_ID)} donor=[{nb.get(NB_DONOR_NAME)}] "
+        + (f"recruiter=[{nb_rec}] " if nb_rec else "")
+        + (f"page={nb.get(NB_PAGE)} " if nb.get(NB_PAGE) else "")
+        + (f"tracking={nb.get(NB_TRACKING)} " if nb.get(NB_TRACKING) else "")
+        + f"method=[{nb.get(NB_METHOD)}] "
+        + (f"r={nb.get(NB_RECURRING)} " if nb.get(NB_RECURRING) else "")
     )
 
     nb_account = nb.get(NB_ACCOUNT, "")
@@ -193,7 +201,12 @@ def sanitize_ea_row(row):
     for k, v in row.items():
         v = v.replace("\t", " ").replace("\n", " ").strip()
         if v:
-            out[k] = v
+            limit = EA_FIELD_LIMITS.get(k, 10000)
+            if len(v) > limit:                           
+                v = v[: limit - 3]
+                v = v[: v.rindex(" ") + 1] if " " in v[limit // 2 :] else v
+                v = v + "..."
+            out[k] = v[: limit - 3] + "..." if len(v) > limit else v
 
     return out
 

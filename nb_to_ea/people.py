@@ -332,10 +332,9 @@ EA_FIELD_LIMITS = {
 @click.command()
 @click.argument("nb_csvs", nargs=-1)
 @click.option("--ea_csv", help="EveryAction CSV to write")
-@click.option("--limit", type=int, help="Limit to first N records")
 @click.option("--add_origin", is_flag=True, help="Add origin source code")
 @click.option("--add_notes", is_flag=True, help="Add notes")
-def main(nb_csvs, ea_csv, limit, add_origin, add_notes):
+def main(nb_csvs, ea_csv, add_origin, add_notes):
     """Converts NationBuilder CSV(s) to EveryAction CSV(s)"""
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)  # Sane ^C behavior
@@ -359,19 +358,17 @@ def main(nb_csvs, ea_csv, limit, add_origin, add_notes):
         else:
             np = nb_path.stem.split("-")
             np = [p for p in np if p not in ("", "nationbuilder", "export")]
-            np.extend([f"limit{limit}"] if limit else [])
             ea_path = nb_path.with_name(f"everyaction-{'-'.join(np)}.txt")
 
         convert_file(
             nb_path,
             ea_path,
-            limit=limit,
             add_origin=add_origin,
             add_notes=add_notes,
         )
 
 
-def convert_file(nb_path, ea_path, *, limit, **row_opts):
+def convert_file(nb_path, ea_path, **row_opts):
     """Converts NationBuilder CSV to EveryAction CSV
 
     :param nb_path: Path to NationBuilder CSV
@@ -392,9 +389,6 @@ def convert_file(nb_path, ea_path, *, limit, **row_opts):
                 # NationBuilder adds leading ' for Excel's benefit
                 nb_row = {k: v.lstrip("'") for k, v in nb_row.items()}
                 input_count += 1
-                if limit and input_count >= limit:
-                    print(f"🛑 Stopped at {limit} -> {output_count} rows")
-                    break
                 for ea_row in convert_nb_row(nb_row, **row_opts):
                     ea_writer.writerow(sanitize_ea_row(ea_row))
                     output_count += 1
