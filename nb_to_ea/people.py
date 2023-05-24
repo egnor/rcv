@@ -8,7 +8,7 @@ from pathlib import Path
 import click
 
 IDENTITY_MAP = dict(
-    nationbuilder_id="Source NationBuilder ID",
+    nationbuilder_id="NationBuilder ID",
     prefix="Prefix",
     first_name="First Name",
     middle_name="Middle Name",
@@ -19,6 +19,7 @@ IDENTITY_MAP = dict(
 MISC_MAP = dict(
     employer="Employer Name",
     occupation="Occupation Name",
+    created_at="Date Acquired",
 )
 
 NB_ADDR_TYPES = ["primary", "address", "billing", "mailing", "user_submitted"]
@@ -259,7 +260,6 @@ NB_EMAIL_BAD_SUFFIX = "_is_bad"
 NB_EMAIL_OPT_IN = "email_opt_in"
 NB_FACEBOOK_USERNAME = "facebook_username"
 NB_FEDERAL_DO_NOT_CALL = "federal_donotcall"
-NB_ID = "nationbuilder_id"
 NB_IS_VOLUNTEER = "is_volunteer"
 NB_MOBILE_BAD = "is_mobile_bad"
 NB_MOBILE_OPT_IN = "mobile_opt_in"
@@ -281,7 +281,6 @@ EA_EMAIL_TYPE = "Email Type"
 EA_EMAIL_TYPE_OTHER = "Other"
 EA_EMAIL_TYPE_PERSONAL = "Personal"
 EA_EXT_FACEBOOK_URL = "Facebook URL"
-EA_EXT_NATIONBUILDER_ID = "NationBuilder ID"
 EA_EXT_OTHER = "Other Website"
 EA_EXT_TWITTER_HANDLE = "Twitter Handle"
 EA_NOTES = "Notes"
@@ -303,7 +302,6 @@ ALL_EA_FIELDS = [
     *MISC_MAP.values(),
     EA_ACTIVIST_CODE,
     EA_EXT_FACEBOOK_URL,
-    EA_EXT_NATIONBUILDER_ID,
     EA_EXT_OTHER,
     EA_EXT_TWITTER_HANDLE,
     EA_EMAIL_ADDRESS,
@@ -411,6 +409,15 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
     identity[EA_PHONE_TYPE] = EA_PHONE_TYPE_OTHER
     identity[EA_PHONE_SMS_OPT] = EA_PHONE_SMS_OPT_UNKNOWN
 
+    nb_tag_list = nb_row.get(NB_TAG_LIST)
+    nb_tags = {t.strip() for t in nb_tag_list.split(",") if t.strip()}
+    if add_origin:
+        identity[EA_ORIGIN_SOURCE_CODE] = EA_ORIGIN_SOURCE_CODE_OTHER
+        for nb_tag, ea_source_code in TAG_SOURCE_MAP.items():
+            if nb_tag in nb_tags:
+                identity[EA_ORIGIN_SOURCE_CODE] = ea_source_code
+                break  # Take the code from the first tag in the map
+
     nb_no_call = to_bool(nb_row.get(NB_DO_NOT_CALL))
     nb_no_contact = to_bool(nb_row.get(NB_DO_NOT_CONTACT))
     nb_fed_no_call = to_bool(nb_row.get(NB_FEDERAL_DO_NOT_CALL))
@@ -424,7 +431,6 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
         identity[EA_PHONE_SMS_OPT] = EA_PHONE_SMS_OPT_OUT
 
     misc = {ek: nb_row.get(nk, "") for nk, ek in MISC_MAP.items()}
-    misc[EA_EXT_NATIONBUILDER_ID] = nb_row.get(NB_ID)
 
     website = nb_row.get(NB_WEBSITE)
     if website:
@@ -444,15 +450,6 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
     twitter_login = nb_row.get(NB_TWITTER_LOGIN)
     if twitter_login:
         misc[EA_EXT_TWITTER_HANDLE] = twitter_login.strip("@")
-
-    nb_tag_list = nb_row.get(NB_TAG_LIST)
-    nb_tags = {t.strip() for t in nb_tag_list.split(",") if t.strip()}
-    if add_origin:
-        misc[EA_ORIGIN_SOURCE_CODE] = EA_ORIGIN_SOURCE_CODE_OTHER
-        for nb_tag, ea_source_code in TAG_SOURCE_MAP.items():
-            if nb_tag in nb_tags:
-                misc[EA_ORIGIN_SOURCE_CODE] = ea_source_code
-                break  # Take the code from the first tag in the map
 
     output_rows = [misc]
 
