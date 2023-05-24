@@ -219,7 +219,7 @@ TAG_SOURCE_MAP = {
     "canvass-libertarian-convention-20220218": "Canvass via NB",
     "table-san-bernardino-arts-fest-20220319": "Canvass via NB",
     # (The anti-AB2808 effort was Feb-Apr 2022)
-    "signup-imported-from-AB2808-capitol-canary-campaign": "Anti-AB2808 Petition via NB",
+    "signup-imported-from-AB2808-capitol-canary-campaign": "Anti-AB2808 Petition",
     "sm-Twitter-AB2808": "Twitter via NB",
     # 2022 con't
     "canvass-foothill-college-political-awareness-day-20220511": "Canvass via NB",
@@ -445,9 +445,6 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
     if twitter_login:
         misc[EA_EXT_TWITTER_HANDLE] = twitter_login.strip("@")
 
-    if nb_row.get(NB_IS_VOLUNTEER):
-        misc[EA_ACTIVIST_CODE] = EA_ACTIVIST_VOLUNTEER
-
     nb_tag_list = nb_row.get(NB_TAG_LIST)
     nb_tags = {t.strip() for t in nb_tag_list.split(",") if t.strip()}
     if add_origin:
@@ -508,6 +505,9 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
         if digits and "@" not in value:
             pmap = {EA_PHONE_NUMBER: digits, EA_PHONE_TYPE: ea_ptype}
             output_rows.append(pmap)
+
+    if nb_row.get(NB_IS_VOLUNTEER):
+        output_rows.append({EA_ACTIVIST_CODE: EA_ACTIVIST_VOLUNTEER})
 
     for nb_tag in nb_tags:
         ea_code = TAG_ACTIVIST_MAP.get(nb_tag)
