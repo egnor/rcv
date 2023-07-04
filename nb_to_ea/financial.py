@@ -68,8 +68,10 @@ NB_RECRUITER_NAME = "recruiter_name"
 NB_RECURRING = "recurring_donation_status"
 NB_TRACKING = "tracking_code_slug"
 
+EA_AMOUNT = "Amount"
 EA_NOTE = "Internal Note"
 EA_SOURCE_CODE = "Source Code"
+EA_NB_ID = FIELD_MAP[NB_ID]
 
 ALL_EA_FIELDS = [
     *FIELD_MAP.values(),
@@ -89,8 +91,9 @@ EA_FIELD_LIMITS = {
 
 @click.command()
 @click.argument("nb_csvs", nargs=-1)
+@click.option("--ea_exclude", help="EveryAction contribution report")
 @click.option("--ea_csv", help="EveryAction CSV to write")
-def main(nb_csvs, ea_csv):
+def main(nb_csvs, ea_exclude, ea_csv):
     """Converts NationBuilder CSV(s) to EveryAction CSV(s)"""
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)  # Sane ^C behavior
@@ -108,6 +111,16 @@ def main(nb_csvs, ea_csv):
         print("💥 Multiple input files, but one output file")
         raise SystemExit(1)
 
+    if ea_exclude:
+        exc_paths = [Path(ea_exclude)]
+    else:
+        pattern = "ContributionReport-*.txt"
+        exc_paths = list(Path(".").glob(pattern))
+
+    excludes = {}
+    for exc_path in exc_paths:
+        excludes.update(read_excludes(exc_path))
+
     for nb_path in nb_paths:
         if ea_csv:
             ea_path = Path(ea_csv)
@@ -116,18 +129,47 @@ def main(nb_csvs, ea_csv):
             np = [p for p in np if p not in ("", "nationbuilder", "export")]
             ea_path = nb_path.with_name(f"everyaction-{'-'.join(np)}.txt")
 
-        convert_file(nb_path, ea_path)
+        convert_file(nb_path, ea_path, excludes)
 
 
-def convert_file(nb_path, ea_path):
+def read_excludes(exc_path):
+    """Reads EveryAction contribution report to exclude
+
+    :param exc_path: Path to EveryAction contribution report
+    :return: Dict of NB transaction IDs/amounts already processed
+    """
+
+    print(f"⬅️ Reading {exc_path}")
+
+    with exc_path.open(encoding="utf16") as exc_file:
+        exc_reader = csv.DictReader(exc_file, dialect=csv.excel_tab)
+        excludes = {}
+        row_count = 0
+        for exc_row in exc_reader:
+            nb_id, amount = exc_row[EA_NB_ID], exc_row[EA_AMOUNT]
+            if nb_id and amount:
+                excludes[nb_id] = amount
+            row_count += 1
+
+        print(f"✅ {row_count} rows: {len(excludes)} excludable transactions")
+
+    print()
+    return excludes
+
+
+def convert_file(nb_path, ea_path, excludes):
     """Converts NationBuilder transactions CSV to EveryAction CSV
 
     :param nb_path: Path to NationBuilder CSV
     :param ea_path: Path to EveryAction CSV
+    :param excludes: Dict of NB transaction IDs/amounts to exclude
     """
 
     print(f"⬅️ Reading {nb_path}")
     print(f"▶️ Writing {ea_path}")
+
+    def money(s):
+        return float(s.replace("$", "").replace(",", ""))
 
     with nb_path.open() as nb_file:
         nb_reader = csv.DictReader(nb_file)
@@ -135,15 +177,27 @@ def convert_file(nb_path, ea_path):
             writer_args = dict(fieldnames=ALL_EA_FIELDS, dialect=csv.excel_tab)
             ea_writer = csv.DictWriter(ea_file, **writer_args)
             ea_writer.writeheader()
-            row_count = 0
+            row_count = exc_count = 0
             for nb_row in nb_reader:
                 # NationBuilder adds leading ' for Excel's benefit
                 nb_row = {k: v.lstrip("'") for k, v in nb_row.items()}
                 ea_row = convert_nb_row(nb_row)
-                ea_writer.writerow(sanitize_ea_row(ea_row))
+                nb_id = ea_row[EA_NB_ID]
+                amount = ea_row[EA_AMOUNT]
+                exc_amount = excludes.get(nb_id)
+                if not exc_amount:
+                    ea_writer.writerow(sanitize_ea_row(ea_row))
+                elif money(exc_amount) == money(amount):
+                    exc_count += 1
+                else:
+                    print(f"💥 NB# {nb_id}: ${amount} != prior ${exc_amount}")
+                    raise SystemExit(1)
                 row_count += 1
-            else:
-                print(f"✅ {row_count} rows")
+
+            print(
+                f"✅ {row_count} rows - {exc_count} excluded = "
+                f"{row_count - exc_count} written"
+            )
 
     print()
 
