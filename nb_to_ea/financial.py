@@ -102,7 +102,7 @@ def main(nb_csvs, ea_exclude, ea_csv):
         nb_paths = [Path(nb_csv) for nb_csv in nb_csvs]
     else:
         pattern = "nationbuilder-financialtransactions-export-*.csv"
-        nb_paths = list(Path(".").glob(pattern))
+        nb_paths = list(sorted(Path(".").glob(pattern)))
         if not nb_paths:
             print(f"💥 No input CSVs ({pattern}) found")
             raise SystemExit(1)
@@ -115,7 +115,7 @@ def main(nb_csvs, ea_exclude, ea_csv):
         exc_paths = [Path(ea_exclude)]
     else:
         pattern = "ContributionReport-*.txt"
-        exc_paths = list(Path(".").glob(pattern))
+        exc_paths = list(sorted(Path(".").glob(pattern)))
 
     excludes = {}
     for exc_path in exc_paths:
