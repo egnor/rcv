@@ -9,6 +9,7 @@ dependencies = [
     "attrs",
     "click",
     "prettyprinter",
+    "zrp@git+https://github.com/egnor/zrp",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +21,7 @@ dev = [
 ]
 
 [project.scripts]
+ea_zrp = "ea_race.ea_zrp:main"
 nb_to_ea_people = "nb_to_ea.people:main"
 nb_to_ea_financial = "nb_to_ea.financial:main"
 
@@ -53,5 +55,6 @@ variable-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"
 argument-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"
 
 [tool.setuptools.package-dir]
+ea_race = "ea_race"
 nb_to_ea = "nb_to_ea"
 rcv_results = "rcv_results"

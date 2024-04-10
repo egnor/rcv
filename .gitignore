@@ -15,6 +15,5 @@ python_venv/
 .DS_Store
 .~lock.*
 .*.swp
-.direnv/
 .idea/
 .vscode/
