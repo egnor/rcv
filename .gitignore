@@ -1,4 +1,5 @@
 # Data
+artifacts/
 *.csv
 *.html
 *.txt
@@ -12,6 +13,8 @@ python_venv/
 
 # Generic, system, text editors
 *~
+*.tmp
+tmp.*
 .DS_Store
 .~lock.*
 .*.swp
