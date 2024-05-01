@@ -23,6 +23,7 @@ dev = [
 
 [project.scripts]
 ea_zrp = "ea_race.ea_zrp:main"
+zrp_test = "ea_race.zrp_test:main"
 nb_to_ea_people = "nb_to_ea.people:main"
 nb_to_ea_financial = "nb_to_ea.financial:main"
 
