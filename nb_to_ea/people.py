@@ -483,9 +483,11 @@ def convert_nb_row(nb_row, *, add_notes, add_origin):
             ea_status = (
                 EA_EMAIL_STATUS_UNSUBSCRIBED
                 if nb_bad or nb_no_contact
-                else EA_EMAIL_STATUS_SUBSCRIBED
-                if nb_email_opt_in
-                else EA_EMAIL_STATUS_NOT_SUBSCRIBED
+                else (
+                    EA_EMAIL_STATUS_SUBSCRIBED
+                    if nb_email_opt_in
+                    else EA_EMAIL_STATUS_NOT_SUBSCRIBED
+                )
             )
             emap = {
                 EA_EMAIL_ADDRESS: email,

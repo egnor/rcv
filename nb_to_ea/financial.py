@@ -256,7 +256,7 @@ def sanitize_ea_row(row):
         v = v.replace("\t", " ").replace("\n", " ").strip()
         if v:
             limit = EA_FIELD_LIMITS.get(k, 10000)
-            if len(v) > limit:                           
+            if len(v) > limit:
                 v = v[: limit - 3]
                 v = v[: v.rindex(" ") + 1] if " " in v[limit // 2 :] else v
                 v = v + "..."

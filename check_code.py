@@ -14,6 +14,8 @@ def run(*args):
 
 os.chdir(str(Path(__file__).resolve().parent))
 run("pip", "install", "-e", ".[dev]")
-run("black", "-l", "80", ".")
-run("isort", "--profile", "black", ".")
-run("mypy", "--namespace-packages", "--explicit-package-bases", ".")
+
+source_dirs = ["nb_to_ea"]
+run("black", "-l", "80", *source_dirs)
+run("isort", "--profile", "black", *source_dirs)
+run("mypy", "--namespace-packages", "--explicit-package-bases", *source_dirs)

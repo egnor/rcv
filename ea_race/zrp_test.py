@@ -1,14 +1,15 @@
 """Script to annotate EveryAction contact data with race predictions"""
 
-import click
 import csv
 import json
-import pandas
 import shutil
 import signal
+from pathlib import Path
+
+import click
+import pandas
 import zrp
 import zrp.download
-from pathlib import Path
 
 
 @click.command()

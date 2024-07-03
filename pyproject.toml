@@ -17,6 +17,7 @@ dev = [
     "black",
     "isort",
     "mypy",
+    "pandas-stubs",
     "pip>=23.3.1",  # get past "error checking the latest version of pip" bug
     "visidata",
 ]

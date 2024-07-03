@@ -1,14 +1,15 @@
 """Script to annotate EveryAction contact data with race predictions"""
 
-import click
 import csv
 import json
-import pandas
 import shutil
 import signal
+from pathlib import Path
+
+import click
+import pandas
 import zrp
 import zrp.download
-from pathlib import Path
 
 EA_TO_ZRP_COLUMNS = {
     "VANID": "ZEST_KEY",
@@ -70,10 +71,10 @@ def main(input_filename, output_filename):
 
     input_df["zip_code"] = ea_df["Zip/Postal"]
     input_df["street_address"] = ea_df.AddressLine1.str.strip().str.extract(
-        r'(?:\d[\w-]*)?\s+([^\d].*)', expand=False
+        r"(?:\d[\w-]*)?\s+([^\d].*)", expand=False
     )
     input_df["house_number"] = ea_df.AddressLine1.str.extract(
-        r'(\d[\w-]*)', expand=False
+        r"(\d[\w-]*)", expand=False
     )
 
     state_mapping_path = zrp_data_path / "processed" / "inv_state_mapping.json"
