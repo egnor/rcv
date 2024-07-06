@@ -13,7 +13,7 @@ def run(*args):
 
 
 os.chdir(str(Path(__file__).resolve().parent))
-run("pip", "install", "-e", ".[dev]")
+run("python3", "-m", "pip", "install", "-e", ".[dev]")
 
 source_dirs = ["nb_to_ea"]
 run("black", "-l", "80", *source_dirs)
