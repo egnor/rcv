@@ -1,8 +1,10 @@
 """Script to migrate financial transactions from NationBuilder to EveryAction"""
 
 import csv
+import io
 import re
 import signal
+import zipfile
 from pathlib import Path
 
 import click
@@ -114,8 +116,8 @@ def main(nb_csvs, ea_exclude, ea_csv):
     if ea_exclude:
         exc_paths = [Path(ea_exclude)]
     else:
-        pattern = "ContributionReport-*.txt"
-        exc_paths = list(sorted(Path(".").glob(pattern)))
+        patterns = ["ContributionReport-*.txt", "ContributionReport-*.zip"]
+        exc_paths = [p for pat in patterns for p in sorted(Path(".").glob(pat))]
 
     excludes = {}
     for exc_path in exc_paths:
@@ -139,10 +141,8 @@ def read_excludes(exc_path):
     :return: Dict of NB transaction IDs/amounts already processed
     """
 
-    print(f"⬅️ Reading {exc_path}")
-
-    with exc_path.open(encoding="utf16") as exc_file:
-        exc_reader = csv.DictReader(exc_file, dialect=csv.excel_tab)
+    def read_text(text_file):
+        exc_reader = csv.DictReader(text_file, dialect=csv.excel_tab)
         excludes = {}
         row_count = 0
         for exc_row in exc_reader:
@@ -152,6 +152,23 @@ def read_excludes(exc_path):
             row_count += 1
 
         print(f"✅ {row_count} rows: {len(excludes)} excludable transactions")
+        return excludes
+
+    if exc_path.suffix == ".zip":
+        with zipfile.ZipFile(exc_path) as exc_zip:
+            exc_files = exc_zip.namelist()
+            if len(exc_files) != 1:
+                print(f"💥 Expected 1 file in {exc_path}: {exc_files}")
+                raise SystemExit(1)
+            print(f"⬅️ {exc_files[0]} ⬅️ {exc_path}")
+            with exc_zip.open(exc_files[0]) as exc_file:
+                text_file = io.TextIOWrapper(exc_file, encoding="utf16")
+                excludes = read_text(text_file)
+
+    elif exc_path.suffix == ".txt":
+        print(f"⬅️ {exc_path}")
+        with exc_path.open(encoding="utf16") as text_file:
+            excludes = read_text(text_file)
 
     print()
     return excludes
@@ -165,8 +182,8 @@ def convert_file(nb_path, ea_path, excludes):
     :param excludes: Dict of NB transaction IDs/amounts to exclude
     """
 
-    print(f"⬅️ Reading {nb_path}")
-    print(f"▶️ Writing {ea_path}")
+    print(f"⬅️ {nb_path}")
+    print(f"▶️ {ea_path}")
 
     def money(s):
         return float(s.replace("$", "").replace(",", ""))

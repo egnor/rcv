@@ -4,6 +4,7 @@ artifacts/
 *.html
 *.txt
 *.xml
+*.zip
 
 # Python
 *.egg-info

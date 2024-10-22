@@ -7,6 +7,7 @@ version = "0.1"
 
 dependencies = [
     "attrs",
+    "boto3",
     "click",
     "prettyprinter",
     "zrp@git+https://github.com/egnor/zrp",
@@ -14,6 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "awscli",
     "black",
     "isort",
     "mypy",
@@ -27,6 +29,7 @@ ea_zrp = "ea_race.ea_zrp:main"
 zrp_test = "ea_race.zrp_test:main"
 nb_to_ea_people = "nb_to_ea.people:main"
 nb_to_ea_financial = "nb_to_ea.financial:main"
+vote_scrape = "vote_scrape.vote_scrape:main"
 
 [tool.black]
 line-length = 80
@@ -61,3 +64,4 @@ argument-rgx = "([^\\W\\dA-Z][^\\WA-Z]*)$"
 ea_race = "ea_race"
 nb_to_ea = "nb_to_ea"
 rcv_results = "rcv_results"
+vote_scrape = "vote_scrape"

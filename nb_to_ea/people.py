@@ -373,8 +373,8 @@ def convert_file(nb_path, ea_path, **row_opts):
     :param ea_path: Path to EveryAction CSV
     """
 
-    print(f"⬅️ Reading {nb_path}")
-    print(f"▶️ Writing {ea_path}")
+    print(f"⬅️ {nb_path}")
+    print(f"▶️ {ea_path}")
 
     with nb_path.open() as nb_file:
         nb_reader = csv.DictReader(nb_file)
