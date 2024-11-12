@@ -216,6 +216,10 @@ def convert_file(nb_path, ea_path, excludes):
                 f"{row_count - exc_count} written"
             )
 
+        if row_count - exc_count <= 0:
+            ea_path.unlink()
+            print(f"🗑️ No rows - deleting {ea_path}")
+
     print()
 
 
