@@ -1,0 +1,23 @@
+[tools]
+# zrp uses scikit-learn 1.0.2 which isn't compatible with python 3.11
+python = "3.10"
+
+[env]
+_.python.venv = { path = "venv.tmp", create = true }
+
+[vars]
+source_dirs = "nb_to_ea"
+
+[tasks.setup]
+run = [
+  "mise install",
+  "mise x -- python3 -m pip install -q --disable-pip-version-check -e .[dev]",
+]
+
+[tasks.check]
+depends = ["setup"]
+run = [
+  "black -l 80 {{vars.source_dirs}}",
+  "isort --profile black {{vars.source_dirs}}",
+  "mypy --namespace-packages --explicit-package-bases {{vars.source_dirs}}",
+]
