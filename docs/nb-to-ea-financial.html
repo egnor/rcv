@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NationBuilder to EveryAction Financial Converter</title>
+
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- JSZip for ZIP file reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .intro {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .step {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .drop-zone {
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #3498db;
+            background: #e8f4f8;
+        }
+
+        .drop-zone.has-file {
+            border-color: #27ae60;
+            background: #e8f8e8;
+        }
+
+        .drop-zone input[type="file"] {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .file-item .icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .file-item .name {
+            flex: 1;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .file-item .info {
+            color: #666;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .file-item .remove {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0 5px;
+        }
+
+        .file-item .remove:hover {
+            color: #c0392b;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .convert-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .convert-btn:hover:not(:disabled) {
+            background: #2980b9;
+        }
+
+        .convert-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .results.visible {
+            display: block;
+        }
+
+        .results h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .result-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .result-item.success {
+            border-left: 4px solid #27ae60;
+        }
+
+        .result-item.warning {
+            border-left: 4px solid #f39c12;
+        }
+
+        .result-item.empty {
+            border-left: 4px solid #95a5a6;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .download-btn:hover {
+            background: #219a52;
+        }
+
+        .error-box {
+            background: #fde8e8;
+            border: 1px solid #f5c6cb;
+            border-left: 4px solid #e74c3c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-box.visible {
+            display: block;
+        }
+
+        .error-box h3 {
+            margin-top: 0;
+            color: #c0392b;
+        }
+
+        .error-box .tip {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        .error-box code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        .stats {
+            font-family: monospace;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .reset-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .processing {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .processing.visible {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #3498db;
+        }
+
+        details.help-section {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        details.help-section summary {
+            font-weight: 600;
+            cursor: pointer;
+            color: #2c3e50;
+            padding: 5px 0;
+        }
+
+        details.help-section summary:hover {
+            color: #3498db;
+        }
+
+        details.help-section .help-content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        details.help-section h4 {
+            margin: 15px 0 10px 0;
+            color: #2c3e50;
+        }
+
+        details.help-section h4:first-child {
+            margin-top: 0;
+        }
+
+        details.help-section ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        details.help-section li {
+            margin-bottom: 8px;
+        }
+
+        details.help-section .doc-link {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e8f4f8;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .next-steps {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f7e6;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .next-steps h3 {
+            margin: 0 0 10px 0;
+            color: #27ae60;
+            font-size: 1.1em;
+        }
+
+        .next-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .next-steps li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>NationBuilder to EveryAction Financial Converter</h1>
+
+    <div class="intro">
+        <p><strong>This tool converts NationBuilder financial transaction exports to EveryAction format.</strong></p>
+        <p>Upload your NationBuilder CSV export and your EveryAction contribution report, then download the converted file ready for bulk upload to EveryAction.</p>
+    </div>
+
+    <details class="help-section">
+        <summary>How do I get these files?</summary>
+        <div class="help-content">
+            <h4>From NationBuilder:</h4>
+            <ol>
+                <li>Log in to <a href="https://calrcv.nationbuilder.com/admin/" target="_blank">NationBuilder admin</a></li>
+                <li>Go to <strong>Finances</strong> in the sidebar</li>
+                <li>Click <strong>Actions</strong> &rarr; <strong>Export</strong></li>
+                <li>Wait for export to complete, then download the CSV</li>
+            </ol>
+
+            <h4>From EveryAction:</h4>
+            <ol>
+                <li>Log in to <a href="https://app.everyaction.com/" target="_blank">EveryAction</a></li>
+                <li>Go to <strong>Reporting</strong> &rarr; <strong>Report Manager</strong></li>
+                <li>Open the <strong>"NB import exclusion"</strong> report</li>
+                <li>Click <strong>Export As...</strong> &rarr; <strong>Text (.txt)</strong></li>
+                <li>Wait for notification, then download the file</li>
+            </ol>
+
+            <div class="doc-link">
+                <strong>Need more detail?</strong> See the <a href="https://github.com/egnor/rcv#importing-contributions-from-nationbuilder-into-everyaction" target="_blank">full documentation with screenshots</a>.
+            </div>
+        </div>
+    </details>
+
+    <div id="errorBox" class="error-box">
+        <h3 id="errorTitle">Error</h3>
+        <div id="errorMessage"></div>
+        <div id="errorTip" class="tip" style="display:none;"></div>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">1</span>Upload NationBuilder Financial Transactions</h2>
+        <div id="nbDropZone" class="drop-zone">
+            <input type="file" id="nbFileInput" accept=".csv" multiple>
+            <p>Drag & drop CSV file(s) here, or click to browse</p>
+            <p class="help-text">Files named like: nationbuilder-financialtransactions-export-*.csv</p>
+        </div>
+        <div id="nbFileList" class="file-list"></div>
+    </div>
+
+    <div class="step">
+        <h2><span class="step-number">2</span>Upload EveryAction Contribution Report</h2>
+        <div id="eaDropZone" class="drop-zone">
+            <input type="file" id="eaFileInput" accept=".zip,.txt">
+            <p>Drag & drop .zip or .txt file here, or click to browse</p>
+            <p class="help-text">Files named like: ContributionReport-*.zip or ContributionReport-*.txt</p>
+        </div>
+        <div id="eaFileList" class="file-list"></div>
+        <p class="help-text"><strong>Why is this required?</strong> This file contains transactions already in EveryAction. Without it, you risk creating duplicate entries.</p>
+    </div>
+
+    <div class="step">
+        <button id="convertBtn" class="convert-btn" disabled>Convert Files</button>
+    </div>
+
+    <div id="processing" class="processing">
+        <div class="spinner"></div>
+        <p>Processing files...</p>
+    </div>
+
+    <div id="results" class="results">
+        <h2>Results</h2>
+        <div id="resultsList"></div>
+
+        <div id="nextSteps" class="next-steps">
+            <h3>Next: Upload to EveryAction</h3>
+            <ol>
+                <li>In EveryAction, go to <strong>Upload New File</strong></li>
+                <li>Select "Load new and/or make changes to existing contacts"</li>
+                <li>Choose mapping template: <strong>"NationBuilder financial transactions via egnor script"</strong></li>
+                <li>Upload the converted file and click <strong>Finish</strong></li>
+                <li>Wait for processing, then <strong>Approve</strong> the batch</li>
+            </ol>
+            <p class="help-text">See the <a href="https://github.com/egnor/rcv#importing-contributions-from-nationbuilder-into-everyaction" target="_blank">full documentation</a> for screenshots.</p>
+        </div>
+
+        <button class="reset-btn" onclick="resetForm()">Convert More Files</button>
+    </div>
+
+    <footer>
+        <p>Part of the <a href="https://github.com/egnor/rcv">CalRCV utilities</a>.
+        See the <a href="https://github.com/egnor/rcv#importing-contributions-from-nationbuilder-into-everyaction">full documentation</a> for the complete import workflow.</p>
+    </footer>
+
+<script>
+// ============================================================================
+// CONFIGURATION CONSTANTS (ported from financial.py)
+// ============================================================================
+
+const FIELD_MAP = {
+    "nationbuilder_id": "Online Reference Number",
+    "signup_nationbuilder_id": "NationBuilder ID",
+    "signup_prefix": "Prefix",
+    "signup_first_name": "First Name",
+    "signup_middle_name": "Middle Name",
+    "signup_last_name": "Last Name",
+    "signup_suffix": "Suffix",
+    "payment_type_name": "Payment Method",
+    "amount": "Amount",
+    "succeeded_at": "Date Received",
+    "check_number": "Check Number",
+};
+
+const C3_VIA_NB = "501c3 Donation via NB";
+const C4_VIA_NB = "501c4 Donation via NB";
+
+const ACCOUNT_TRACKING_SOURCE_MAP = {
+    "California RCV Institute Inc. 501(c)(3) donations - tax deductible": {
+        "": `Online One-Time ${C3_VIA_NB}`,
+        "/R": `Online Recurring ${C3_VIA_NB}`,
+        "501c3_es_onetime": `Online One-Time ${C3_VIA_NB}`,
+        "501c3_manual_entry_onetime": `Manual One-Time ${C3_VIA_NB}`,
+        "501c3_via_benevity_recurring": `Benevity One-Time ${C3_VIA_NB}`,
+        "501c3_website_onetime": `Online One-Time ${C3_VIA_NB}`,
+        "501c3_website_recurring/R": `Online Recurring ${C3_VIA_NB}`,
+    },
+    "California RCV Coalition Inc. 501(c)(4) Donation - not tax deductible": {
+        "": `Online One-Time ${C4_VIA_NB}`,
+        "/R": `Online Recurring ${C4_VIA_NB}`,
+        "501c4_campaign_redondo_beach_2023": `Online One-Time ${C4_VIA_NB}`,
+        "501c4_website_onetime": `Online One-Time ${C4_VIA_NB}`,
+        "501c4_website_recurring/R": `Online Recurring ${C4_VIA_NB}`,
+        "donation_mtg_statewide_onetime": `Online One-Time ${C4_VIA_NB}`,
+        "donation_mtg_statewide_recurring/R": `Online Recurring ${C4_VIA_NB}`,
+        "fnd_q1cc_event_ticket": `Online One-Time ${C4_VIA_NB}`,
+    },
+    "": {
+        "": `Manual One-Time ${C4_VIA_NB}`,
+        "501c3_manual_entry_onetime": `Manual One-Time ${C3_VIA_NB}`,
+        "501c3_manual_entry_recurring": `Manual Recurring ${C3_VIA_NB}`,
+        "501c3_via_benevity_onetime": `Benevity One-Time ${C3_VIA_NB}`,
+        "501c3_via_benevity_recurring": `Benevity Recurring ${C3_VIA_NB}`,
+        "501c4_campaign_redondo_beach_2023": `Online One-Time ${C4_VIA_NB}`,
+        "501c4_in_kind": `Manual One-Time ${C4_VIA_NB}`,
+        "501c4_manual_entry_onetime": `Manual One-Time ${C4_VIA_NB}`,
+    },
+};
+
+const NB_ACCOUNT = "merchant_account_name";
+const NB_DONOR_ID = "signup_nationbuilder_id";
+const NB_DONOR_NAME = "signup_full_name";
+const NB_ID = "nationbuilder_id";
+const NB_METHOD = "payment_type_name";
+const NB_NOTE = "note";
+const NB_PAGE = "page_slug";
+const NB_RECRUITER_ID = "recruiter_id";
+const NB_RECRUITER_NAME = "recruiter_name";
+const NB_RECURRING = "recurring_donation_status";
+const NB_TRACKING = "tracking_code_slug";
+
+const EA_AMOUNT = "Amount";
+const EA_NOTE = "Internal Note";
+const EA_SOURCE_CODE = "Source Code";
+const EA_NB_ID = FIELD_MAP[NB_ID];
+
+const ALL_EA_FIELDS = [
+    ...Object.values(FIELD_MAP),
+    EA_SOURCE_CODE,
+    EA_NOTE,
+];
+
+const EA_FIELD_LIMITS = {
+    "Prefix": 10,
+    "First Name": 50,
+    "Middle Name": 50,
+    "Last Name": 50,
+    "Suffix": 10,
+    "Internal Note": 255,
+};
+
+// Expected columns for validation
+const EXPECTED_NB_COLUMNS = [
+    "nationbuilder_id", "signup_nationbuilder_id", "amount",
+    "merchant_account_name", "payment_type_name"
+];
+
+const PEOPLE_EXPORT_COLUMNS = ["first_name", "last_name", "email1", "tag_list"];
+
+const EXPECTED_EA_COLUMNS = ["Online Reference Number", "Amount"];
+
+// ============================================================================
+// STATE
+// ============================================================================
+
+let nbFiles = [];
+let eaFile = null;
+let excludes = {};
+
+// ============================================================================
+// UTILITY FUNCTIONS (ported from financial.py)
+// ============================================================================
+
+function money(s) {
+    if (typeof s !== 'string') s = String(s);
+    return parseFloat(s.replace(/\$/g, "").replace(/,/g, ""));
+}
+
+function toBool(value) {
+    if (typeof value === 'string') {
+        value = value.toLowerCase();
+    }
+    if (["true", "yes", "y", "1"].includes(value) || value === 1 || value === true) {
+        return true;
+    }
+    if (["false", "no", "n", "0"].includes(value) || value === 0 || value === false) {
+        return false;
+    }
+    if (["", "na", "n/a"].includes(value) || value === null || value === undefined) {
+        return null;
+    }
+    return Boolean(value);
+}
+
+function sanitizeEaRow(row) {
+    const out = {};
+    for (const [k, v] of Object.entries(row)) {
+        let val = String(v || "").replace(/\t/g, " ").replace(/\n/g, " ").trim();
+        if (val) {
+            const limit = EA_FIELD_LIMITS[k] || 10000;
+            if (val.length > limit) {
+                val = val.slice(0, limit - 3);
+                // Try to break at a word boundary in the right half
+                const rightHalf = val.slice(Math.floor(limit / 2));
+                if (rightHalf.includes(" ")) {
+                    val = val.slice(0, val.lastIndexOf(" ") + 1);
+                }
+                val = val + "...";
+            }
+            // Double-check after potential word break
+            if (val.length > limit) {
+                val = val.slice(0, limit - 3) + "...";
+            }
+            out[k] = val;
+        }
+    }
+    return out;
+}
+
+function convertNbRow(nb) {
+    // Build basic EA row from field map
+    const eaRow = {};
+    for (const [nk, ek] of Object.entries(FIELD_MAP)) {
+        eaRow[ek] = nb[nk] || "";
+    }
+
+    // Build internal note
+    const nbDonorId = nb[NB_DONOR_ID] || "";
+    const nbRecId = nb[NB_RECRUITER_ID] || "";
+    const nbRec = (nbRecId && nbRecId !== nbDonorId) ? (nb[NB_RECRUITER_NAME] || "") : "";
+
+    let note = "From NB";
+    if (nb[NB_NOTE]) {
+        note += `: ${nb[NB_NOTE]} `;
+    } else {
+        note += " ";
+    }
+    note += `*** txid=${nb[NB_ID] || ""} donor=[${nb[NB_DONOR_NAME] || ""}] `;
+    if (nbRec) {
+        note += `recruiter=[${nbRec}] `;
+    }
+    if (nb[NB_PAGE]) {
+        note += `page=${nb[NB_PAGE]} `;
+    }
+    if (nb[NB_TRACKING]) {
+        note += `tracking=${nb[NB_TRACKING]} `;
+    }
+    note += `method=[${nb[NB_METHOD] || ""}] `;
+    if (nb[NB_RECURRING]) {
+        note += `r=${nb[NB_RECURRING]} `;
+    }
+
+    eaRow[EA_NOTE] = note;
+
+    // Determine source code from account + tracking
+    const nbAccount = nb[NB_ACCOUNT] || "";
+    const nbRecurring = toBool(nb[NB_RECURRING]);
+    let nbTracking = nb[NB_TRACKING] || "";
+    if (nbRecurring) {
+        nbTracking += "/R";
+    }
+
+    const trackingSourceMap = ACCOUNT_TRACKING_SOURCE_MAP[nbAccount];
+    if (trackingSourceMap === undefined) {
+        throw {
+            type: "unknown_account",
+            account: nbAccount,
+            row: nb
+        };
+    }
+
+    const source = trackingSourceMap[nbTracking];
+    if (source === undefined) {
+        throw {
+            type: "unknown_tracking",
+            account: nbAccount,
+            tracking: nbTracking,
+            row: nb
+        };
+    }
+
+    eaRow[EA_SOURCE_CODE] = source;
+    return eaRow;
+}
+
+function rowToTsv(row, fields) {
+    return fields.map(f => row[f] || "").join("\t");
+}
+
+// ============================================================================
+// FILE PARSING
+// ============================================================================
+
+async function parseNbCsv(file) {
+    return new Promise((resolve, reject) => {
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+                // Strip leading ' from all values (NationBuilder Excel compatibility)
+                const data = results.data.map(row => {
+                    const cleaned = {};
+                    for (const [k, v] of Object.entries(row)) {
+                        cleaned[k] = typeof v === 'string' ? v.replace(/^'/, '') : v;
+                    }
+                    return cleaned;
+                });
+                resolve({
+                    data: data,
+                    fields: results.meta.fields,
+                    errors: results.errors
+                });
+            },
+            error: (error) => reject(error)
+        });
+    });
+}
+
+async function parseEaExcludes(file) {
+    let text;
+
+    if (file.name.endsWith('.zip')) {
+        // Handle ZIP file
+        const zip = await JSZip.loadAsync(file);
+        const fileNames = Object.keys(zip.files);
+        if (fileNames.length !== 1) {
+            throw {
+                type: "zip_multiple_files",
+                files: fileNames
+            };
+        }
+        const innerFile = zip.files[fileNames[0]];
+        const arrayBuffer = await innerFile.async('arraybuffer');
+
+        // Try UTF-16 first (EveryAction default), then UTF-8
+        try {
+            const decoder = new TextDecoder('utf-16');
+            text = decoder.decode(arrayBuffer);
+        } catch (e) {
+            const decoder = new TextDecoder('utf-8');
+            text = decoder.decode(arrayBuffer);
+        }
+    } else {
+        // Handle TXT file - try UTF-16 first
+        const arrayBuffer = await file.arrayBuffer();
+        try {
+            const decoder = new TextDecoder('utf-16');
+            text = decoder.decode(arrayBuffer);
+        } catch (e) {
+            const decoder = new TextDecoder('utf-8');
+            text = decoder.decode(arrayBuffer);
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        Papa.parse(text, {
+            header: true,
+            delimiter: '\t',
+            skipEmptyLines: true,
+            complete: (results) => {
+                const excludes = {};
+                let rowCount = 0;
+                for (const row of results.data) {
+                    const nbId = row[EA_NB_ID];
+                    const amount = row[EA_AMOUNT];
+                    if (nbId && amount) {
+                        excludes[nbId] = amount;
+                    }
+                    rowCount++;
+                }
+                resolve({
+                    excludes: excludes,
+                    rowCount: rowCount,
+                    excludeCount: Object.keys(excludes).length,
+                    fields: results.meta.fields
+                });
+            },
+            error: (error) => reject(error)
+        });
+    });
+}
+
+// ============================================================================
+// VALIDATION
+// ============================================================================
+
+function validateNbColumns(fields) {
+    const missing = EXPECTED_NB_COLUMNS.filter(col => !fields.includes(col));
+
+    // Check if this looks like a people export instead
+    const isPeopleExport = PEOPLE_EXPORT_COLUMNS.every(col => fields.includes(col));
+
+    if (missing.length > 0) {
+        return {
+            valid: false,
+            missing: missing,
+            isPeopleExport: isPeopleExport,
+            foundColumns: fields.slice(0, 10)
+        };
+    }
+    return { valid: true };
+}
+
+function validateEaColumns(fields) {
+    const missing = EXPECTED_EA_COLUMNS.filter(col => !fields.includes(col));
+    if (missing.length > 0) {
+        return {
+            valid: false,
+            missing: missing,
+            foundColumns: fields.slice(0, 10)
+        };
+    }
+    return { valid: true };
+}
+
+// ============================================================================
+// UI HELPERS
+// ============================================================================
+
+function showError(title, message, tip = null) {
+    const errorBox = document.getElementById('errorBox');
+    document.getElementById('errorTitle').textContent = title;
+    document.getElementById('errorMessage').innerHTML = message;
+
+    const tipEl = document.getElementById('errorTip');
+    if (tip) {
+        tipEl.innerHTML = tip;
+        tipEl.style.display = 'block';
+    } else {
+        tipEl.style.display = 'none';
+    }
+
+    errorBox.classList.add('visible');
+}
+
+function hideError() {
+    document.getElementById('errorBox').classList.remove('visible');
+}
+
+function updateConvertButton() {
+    const btn = document.getElementById('convertBtn');
+    btn.disabled = !(nbFiles.length > 0 && eaFile !== null);
+}
+
+function renderNbFileList() {
+    const list = document.getElementById('nbFileList');
+    const dropZone = document.getElementById('nbDropZone');
+
+    if (nbFiles.length === 0) {
+        list.innerHTML = '';
+        dropZone.classList.remove('has-file');
+        return;
+    }
+
+    dropZone.classList.add('has-file');
+    list.innerHTML = nbFiles.map((file, i) => `
+        <div class="file-item">
+            <span class="icon">&#x2705;</span>
+            <span class="name">${escapeHtml(file.name)}</span>
+            <button class="remove" onclick="removeNbFile(${i})" title="Remove">&times;</button>
+        </div>
+    `).join('');
+}
+
+function renderEaFileList() {
+    const list = document.getElementById('eaFileList');
+    const dropZone = document.getElementById('eaDropZone');
+
+    if (!eaFile) {
+        list.innerHTML = '';
+        dropZone.classList.remove('has-file');
+        return;
+    }
+
+    dropZone.classList.add('has-file');
+    let info = '';
+    if (eaFile.excludeCount !== undefined) {
+        info = `<span class="info">${eaFile.excludeCount} existing transactions loaded</span>`;
+    }
+
+    list.innerHTML = `
+        <div class="file-item">
+            <span class="icon">&#x2705;</span>
+            <span class="name">${escapeHtml(eaFile.file.name)}</span>
+            ${info}
+            <button class="remove" onclick="removeEaFile()" title="Remove">&times;</button>
+        </div>
+    `;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function removeNbFile(index) {
+    nbFiles.splice(index, 1);
+    renderNbFileList();
+    updateConvertButton();
+    hideError();
+}
+
+function removeEaFile() {
+    eaFile = null;
+    excludes = {};
+    renderEaFileList();
+    updateConvertButton();
+    hideError();
+}
+
+function resetForm() {
+    nbFiles = [];
+    eaFile = null;
+    excludes = {};
+    renderNbFileList();
+    renderEaFileList();
+    updateConvertButton();
+    hideError();
+    document.getElementById('results').classList.remove('visible');
+    document.getElementById('processing').classList.remove('visible');
+}
+
+// ============================================================================
+// FILE UPLOAD HANDLERS
+// ============================================================================
+
+function setupDropZone(dropZoneId, inputId, handler) {
+    const dropZone = document.getElementById(dropZoneId);
+    const input = document.getElementById(inputId);
+
+    dropZone.addEventListener('click', () => input.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        handler(e.dataTransfer.files);
+    });
+
+    input.addEventListener('change', () => {
+        handler(input.files);
+        input.value = ''; // Allow re-selecting same file
+    });
+}
+
+async function handleNbFiles(files) {
+    hideError();
+
+    for (const file of files) {
+        if (!file.name.endsWith('.csv')) {
+            showError(
+                'Wrong file type',
+                `<p>Expected a CSV file, but got: <code>${escapeHtml(file.name)}</code></p>`,
+                'NationBuilder exports are CSV files ending in .csv'
+            );
+            return;
+        }
+
+        // Validate columns
+        try {
+            const parsed = await parseNbCsv(file);
+            const validation = validateNbColumns(parsed.fields);
+
+            if (!validation.valid) {
+                let message = `<p>This doesn't look like a NationBuilder financial transactions export.</p>`;
+                message += `<p><strong>Missing expected columns:</strong> <code>${validation.missing.join(', ')}</code></p>`;
+                message += `<p><strong>Found columns:</strong> <code>${validation.foundColumns.join(', ')}...</code></p>`;
+
+                let tip = null;
+                if (validation.isPeopleExport) {
+                    tip = '<strong>This looks like a People export, not a Financial Transactions export.</strong><br>Make sure you exported from: <strong>Finances &rarr; Export</strong> (not People &rarr; Export)';
+                }
+
+                showError('Wrong export type', message, tip);
+                return;
+            }
+
+            nbFiles.push(file);
+        } catch (e) {
+            showError('Error reading file', `<p>Could not parse <code>${escapeHtml(file.name)}</code>: ${escapeHtml(e.message || String(e))}</p>`);
+            return;
+        }
+    }
+
+    renderNbFileList();
+    updateConvertButton();
+}
+
+async function handleEaFile(files) {
+    hideError();
+
+    if (files.length !== 1) {
+        showError('Multiple files', '<p>Please upload only one EveryAction contribution report.</p>');
+        return;
+    }
+
+    const file = files[0];
+
+    if (!file.name.endsWith('.zip') && !file.name.endsWith('.txt')) {
+        showError(
+            'Wrong file type',
+            `<p>Expected a .zip or .txt file, but got: <code>${escapeHtml(file.name)}</code></p>`,
+            'EveryAction contribution reports are typically named ContributionReport-*.zip or ContributionReport-*.txt'
+        );
+        return;
+    }
+
+    try {
+        const parsed = await parseEaExcludes(file);
+        const validation = validateEaColumns(parsed.fields);
+
+        if (!validation.valid) {
+            let message = `<p>This doesn't look like an EveryAction contribution report.</p>`;
+            message += `<p><strong>Missing expected columns:</strong> <code>${validation.missing.join(', ')}</code></p>`;
+            message += `<p><strong>Found columns:</strong> <code>${validation.foundColumns.join(', ')}...</code></p>`;
+
+            showError('Wrong report type', message, 'Make sure you exported the "NB import exclusion" report from EveryAction Report Manager.');
+            return;
+        }
+
+        excludes = parsed.excludes;
+        eaFile = {
+            file: file,
+            excludeCount: parsed.excludeCount
+        };
+    } catch (e) {
+        if (e.type === 'zip_multiple_files') {
+            showError('Invalid ZIP file', `<p>Expected ZIP to contain one file, but found ${e.files.length}: <code>${e.files.join(', ')}</code></p>`);
+        } else {
+            showError('Error reading file', `<p>Could not parse <code>${escapeHtml(file.name)}</code>: ${escapeHtml(e.message || String(e))}</p>`);
+        }
+        return;
+    }
+
+    renderEaFileList();
+    updateConvertButton();
+}
+
+// ============================================================================
+// CONVERSION
+// ============================================================================
+
+async function convertFiles() {
+    hideError();
+    document.getElementById('processing').classList.add('visible');
+    document.getElementById('results').classList.remove('visible');
+
+    const results = [];
+
+    // Small delay to let UI update
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    for (const file of nbFiles) {
+        try {
+            const result = await convertSingleFile(file);
+            results.push(result);
+        } catch (e) {
+            document.getElementById('processing').classList.remove('visible');
+
+            if (e.type === 'unknown_account') {
+                const validAccounts = Object.keys(ACCOUNT_TRACKING_SOURCE_MAP).map(a => a || '(empty)').join('", "');
+                showError(
+                    'Unknown merchant account',
+                    `<p>Found unknown merchant account: <code>${escapeHtml(e.account || '(empty)')}</code></p>
+                     <p><strong>Valid accounts are:</strong> "${validAccounts}"</p>
+                     <p>This transaction had ID: <code>${escapeHtml(e.row[NB_ID] || 'unknown')}</code></p>`,
+                    'This usually means NationBuilder has a new payment processor configured. The converter code needs to be updated.'
+                );
+            } else if (e.type === 'unknown_tracking') {
+                const trackingMap = ACCOUNT_TRACKING_SOURCE_MAP[e.account] || {};
+                const validCodes = Object.keys(trackingMap).map(t => t || '(empty)').join('", "');
+                showError(
+                    'Unknown tracking code',
+                    `<p>Found unknown tracking code: <code>${escapeHtml(e.tracking || '(empty)')}</code></p>
+                     <p>For account: <code>${escapeHtml(e.account || '(empty)')}</code></p>
+                     <p><strong>Valid tracking codes for this account:</strong> "${validCodes}"</p>
+                     <p>Transaction ID: <code>${escapeHtml(e.row[NB_ID] || 'unknown')}</code></p>`,
+                    'This usually means NationBuilder has a new tracking code configured. The converter code needs to be updated.'
+                );
+            } else if (e.type === 'amount_mismatch') {
+                showError(
+                    'Amount mismatch',
+                    `<p>Transaction <code>${escapeHtml(e.nbId)}</code> exists in EveryAction with amount <code>${escapeHtml(e.eaAmount)}</code>, but NationBuilder shows <code>${escapeHtml(e.nbAmount)}</code>.</p>
+                     <p>This indicates a data integrity issue that needs investigation.</p>`
+                );
+            } else {
+                showError('Conversion error', `<p>${escapeHtml(e.message || String(e))}</p>`);
+            }
+            return;
+        }
+    }
+
+    document.getElementById('processing').classList.remove('visible');
+    showResults(results);
+}
+
+async function convertSingleFile(file) {
+    const parsed = await parseNbCsv(file);
+    const rows = [];
+    let excCount = 0;
+
+    for (const nbRow of parsed.data) {
+        const eaRow = convertNbRow(nbRow);
+        const nbId = eaRow[EA_NB_ID];
+        const amount = eaRow[EA_AMOUNT];
+        const excAmount = excludes[nbId];
+
+        if (!excAmount) {
+            // Not in exclusion list - include it
+            rows.push(sanitizeEaRow(eaRow));
+        } else if (money(excAmount) === money(amount)) {
+            // Exact match - exclude it
+            excCount++;
+        } else {
+            // ID exists but amount differs - error!
+            throw {
+                type: 'amount_mismatch',
+                nbId: nbId,
+                nbAmount: amount,
+                eaAmount: excAmount
+            };
+        }
+    }
+
+    // Generate output filename
+    const nameParts = file.name.replace('.csv', '').split('-')
+        .filter(p => p && !['nationbuilder', 'export'].includes(p));
+    const outName = `everyaction-${nameParts.join('-')}.txt`;
+
+    // Generate TSV content
+    const header = ALL_EA_FIELDS.join('\t');
+    const dataRows = rows.map(row => rowToTsv(row, ALL_EA_FIELDS));
+    const content = [header, ...dataRows].join('\n');
+
+    return {
+        inputName: file.name,
+        outputName: outName,
+        inputCount: parsed.data.length,
+        excludedCount: excCount,
+        outputCount: rows.length,
+        content: content
+    };
+}
+
+function showResults(results) {
+    const list = document.getElementById('resultsList');
+
+    list.innerHTML = results.map(r => {
+        let className = 'result-item';
+        let status = '';
+        let downloadBtn = '';
+
+        if (r.outputCount === 0) {
+            className += ' empty';
+            status = `<p class="stats">&#x2139;&#xFE0F; ${r.inputCount} rows - ${r.excludedCount} excluded = <strong>0 new transactions</strong></p>
+                      <p>All transactions in this file are already in EveryAction.</p>`;
+        } else {
+            className += ' success';
+            status = `<p class="stats">&#x2705; ${r.inputCount} rows - ${r.excludedCount} excluded = <strong>${r.outputCount} written</strong></p>`;
+
+            const blob = new Blob([r.content], { type: 'text/tab-separated-values' });
+            const url = URL.createObjectURL(blob);
+            downloadBtn = `<a href="${url}" download="${escapeHtml(r.outputName)}" class="download-btn">&#x1F4E5; Download ${escapeHtml(r.outputName)}</a>`;
+        }
+
+        return `
+            <div class="${className}">
+                <p><strong>Input:</strong> ${escapeHtml(r.inputName)}</p>
+                ${status}
+                ${downloadBtn}
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('results').classList.add('visible');
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupDropZone('nbDropZone', 'nbFileInput', handleNbFiles);
+    setupDropZone('eaDropZone', 'eaFileInput', handleEaFile);
+
+    document.getElementById('convertBtn').addEventListener('click', convertFiles);
+});
+</script>
+</body>
+</html>

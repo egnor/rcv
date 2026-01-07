@@ -1,7 +1,6 @@
 # Data
 artifacts/
 *.csv
-*.html
 *.txt
 *.xml
 *.zip
