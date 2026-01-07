@@ -55,13 +55,27 @@ If you got weird errors, let me (egnor) know. Otherwise you should be good to go
 ## Importing contributions from NationBuilder into EveryAction
 
 The way this works: We download a record of all transactions so far from both
-EveryAction and NationBuilder. Then we run this code which converts the NB transactions
-to EA format, and removes any transactions already in EA, producing a file which we
+EveryAction and NationBuilder. Then we run a converter which transforms NB transactions
+to EA format, removing any transactions already in EA, producing a file which we
 bulk upload to EA.
 
-1. Make sure this code is ready to run (instructions above).
+### Choose your converter
 
-2. Log in to [the NationBuilder admin panel for CalRCV](https://calrcv.nationbuilder.com/admin/).
+**Option A: Web converter (recommended)** — No setup required, works in any browser:
+- **https://egnor.github.io/rcv/nb-to-ea-financial.html**
+
+**Option B: Command-line script** — For those comfortable with Terminal:
+- Requires Python setup (see "How to set up this code" above)
+- Run `nb_to_ea_financial` after downloading the files
+
+Both options produce identical output. The steps below show where to get the input files
+and how to upload the result.
+
+---
+
+### Step-by-step instructions
+
+1. Log in to [the NationBuilder admin panel for CalRCV](https://calrcv.nationbuilder.com/admin/).
 
 3. Select [the "Finances" entry](https://calrcv.nationbuilder.com/admin/financial_transactions) in the sidebar.
 
@@ -104,13 +118,16 @@ bulk upload to EA.
 
     ![image](https://github.com/user-attachments/assets/c2dd2e1d-34ad-436d-ba2f-a4570d62fd0e)
 
-15. Click to download the file and **save it to the `rcv` directory** (or move in there after download).
-
-    In that directory, you should have two new data files (it's OK if older files are also present):
+15. Click to download the file. You should now have two data files:
     - `nationbuilder-financialtransactions-export-NNN-YYYY-MM-DD.csv` (from NationBuilder)
     - `ContributionReport-NNNNNNNNNNNNNNNN.zip` (from EveryAction)
-   
-16. Now, in a Terminal window, enter the `rcv` directory and run the converter:
+
+16. **Run the converter** using one of these options:
+
+    **Option A: Web converter** — Go to https://egnor.github.io/rcv/nb-to-ea-financial.html,
+    upload both files, and download the result.
+
+    **Option B: Command-line** — Save both files to the `rcv` directory and run:
     ```sh
     cd rcv  # if you weren't already there
     nb_to_ea_financial
@@ -127,7 +144,7 @@ bulk upload to EA.
     ✅ 2066 rows - 2061 excluded = 5 written
     ```
 
-    There should now be an `everyaction-financialtransactions-NNN-YYYY-MM-DD.txt` file.
+    Either way, you'll get an `everyaction-financialtransactions-NNN-YYYY-MM-DD.txt` file.
     This is what we'll be uploading to EA.
 
 17. Back on the EveryAction side, search for
